@@ -1,12 +1,19 @@
 <html>
     <head>
         <title>Freebox</title>
+        <link rel="stylesheet" type="text/css" href="styles.css" />
     </head>
     <body>
         <h1>Welcome to Freebox!</h1>
         <button onclick="addUser()">Add a user</button>
+        <p></p>
         <button onclick="addPost()">Add a post</button>
+        <p></p>
         <button onclick="seeAllPosts()">See all posts</button>
+        <p></p>
+        <button onclick="singleUser()">Search Users</button>
+        <p></p>
+        <button onclick="editPost()">Edit Post</button>
 
         <script>
             function addUser() {
@@ -19,6 +26,14 @@
 
             function seeAllPosts() {
                 window.location.href = "/all";
+            }
+
+            function singleUser() {
+                window.location.href = "/public/userSearch.html";
+            }
+
+            function editPost() {
+                window.location.href = "/public/editPost.html";
             }
         </script>
     </body>

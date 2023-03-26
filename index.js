@@ -11,9 +11,36 @@ var Post = require('./Post.js');
 
 /***************************************/
 
+// endpoint for creating a new post
+// this is the action of the "create new post" form
+app.use('/create', (req, res) => {
+	// construct the Post from the form data which is in the request body
+	var newPost = new Post ({
+		user: req.body.userID,
+		price: req.body.price,
+		desc: req.body.desc,
+		available: req.body.status
+	    });
+
+	// save the person to the database
+	newPost.save( (err) => { 
+		if (err) {
+		    res.type('html').status(200);
+		    res.write('uh oh: ' + err);
+		    console.log(err);
+		    res.end();
+		}
+		else {
+		    // display the "successfull created" message
+		    res.send('successfully added ' + newPost.user + '\'s post to the database');
+		}
+	    } ); 
+    }
+    );
+
 // endpoint for showing all the people
 app.use('/all', (req, res) => {
-	suggestion.find({}, (err, post) => {
+	Post.find({}, (err, post) => {
 		if (err) {
 		    res.type('html').status(400);
 		    console.log('uh oh' + err);
@@ -43,6 +70,39 @@ app.use('/all', (req, res) => {
 	});
 });
 
+
+// endpoint for showing a single user
+app.use('/singleUser', (req, res) => {
+	// construct the query object
+	var filter = {};
+	if (req.query.user) {
+	    // if there's a name in the query parameter, use it here
+	    filter = { "user" : req.query.user };
+	} else {
+		res.json({"status" : "No user was specified."});
+		return;
+	}
+
+	Post.findOne(filter, (err, post) => {
+		if (err) {
+		    res.type('html').status(400);
+		    console.log('uh oh' + err);
+			res.json({'status': 'error'});
+		    res.write(err);
+		}
+		else if (!post || post.length == 0) {
+			res.json({'status' : 'User not found'});
+		} else {
+			res.type('html').status(400);
+			user = post.user
+			res.type('html').status(200);
+			res.json( {
+				'user': user
+				// potentially add other information about the user.. maybe num posts?
+			});
+		}
+	});
+});
 
 
 

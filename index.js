@@ -150,8 +150,6 @@ app.use('/edit', (req, res) => {
 	jsonObj[property] = newValue
 	var action = { '$set' : jsonObj };
 
-	console.log(action);
-
 	Post.findOneAndUpdate( filter, action, (err, orig) => {
 		if (err) {
 		    res.type('html').status(400);

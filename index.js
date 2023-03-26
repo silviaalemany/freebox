@@ -6,14 +6,16 @@ var app = express();
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// import the Person class from Person.js
+// import the Post class from Post.js
 var Post = require('./Post.js');
+// import the User class from User.js
+var User = require('./User.js');
 
 /***************************************/
 
 // endpoint for creating a new post
-// this is the action of the "create new post" form
-app.use('/create', (req, res) => {
+// this is the action of "postform.html"
+app.use('/createPost', (req, res) => {
 	// construct the Post from the form data which is in the request body
 	var newPost = new Post ({
 		user: req.body.userID,
@@ -38,7 +40,36 @@ app.use('/create', (req, res) => {
     }
     );
 
-// endpoint for showing all the people
+
+// endpoint for creating a new user
+// this is the action of "personform.html"
+app.use('/createUser', (req, res) => {
+	// construct the Post from the form data which is in the request body
+	var newUser = new User ({
+		name: req.body.name,
+		id: req.body.id,
+		email: req.body.email,
+		bio: req.body.bio
+	    });
+
+	// save the person to the database
+	newUser.save( (err) => { 
+		if (err) {
+		    res.type('html').status(200);
+		    res.write('uh oh: ' + err);
+		    console.log(err);
+		    res.end();
+		}
+		else {
+		    // display the "successfull created" message
+		    res.send('successfully added new user ' + newUser.name + ' to the database.');
+		}
+	    } ); 
+    }
+    );
+
+
+// endpoint for showing all the posts
 app.use('/all', (req, res) => {
 	Post.find({}, (err, post) => {
 		if (err) {
@@ -77,34 +108,43 @@ app.use('/singleUser', (req, res) => {
 	var filter = {};
 	if (req.query.user) {
 	    // if there's a name in the query parameter, use it here
-	    filter = { "user" : req.query.user };
+	    filter = { "id" : req.query.user };
 	} else {
 		res.json({"status" : "No user was specified."});
 		return;
 	}
 
-	Post.findOne(filter, (err, post) => {
+	User.findOne(filter, (err, user) => {
 		if (err) {
 		    res.type('html').status(400);
 		    console.log('uh oh' + err);
 			res.json({'status': 'error'});
 		    res.write(err);
 		}
-		else if (!post || post.length == 0) {
+		else if (!user || user.length == 0) {
 			res.json({'status' : 'User not found'});
 		} else {
 			res.type('html').status(400);
-			user = post.user
+			user = { 'name' : user.name,
+					'id' : user.id, 
+					'email' : user.email,
+					'bio' : user.bio };
 			res.type('html').status(200);
-			res.json( {
+			res.json({
 				'user': user
-				// potentially add other information about the user.. maybe num posts?
 			});
 		}
 	});
 });
 
 
+app.use('\edit', (req, res) => {
+	var filter = { 'id' : req.query.id };
+	var property = req.query.property;
+	var newValue = req.query.newValue;
+	var action = { '$set' : { property : newValue } };
+
+})
 
 
 

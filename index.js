@@ -18,7 +18,7 @@ var User = require('./User.js');
 app.use('/createPost', (req, res) => {
 	// construct the Post from the form data which is in the request body
 	var newPost = new Post ({
-		user: req.body.userID,
+		user: req.body.user,
 		price: req.body.price,
 		desc: req.body.desc,
 		available: req.body.status
@@ -106,9 +106,9 @@ app.use('/all', (req, res) => {
 app.use('/singleUser', (req, res) => {
 	// construct the query object
 	var filter = {};
-	if (req.query.user) {
+	if (req.body.user && (req.body.user.length > 0)) {
 	    // if there's a name in the query parameter, use it here
-	    filter = { "id" : req.query.user };
+	    filter = { "id" : req.body.user };
 	} else {
 		res.json({"status" : "No user was specified."});
 		return;
@@ -137,12 +137,31 @@ app.use('/singleUser', (req, res) => {
 	});
 });
 
+// endpoint to edit a post
+app.use('/edit', (req, res) => {
+	if (!req.body.user || !req.body.property || !req.body.newValue) {
+		res.json({'status': 'Missing data. Please provide username, property, and new value.'});
+		return;
+	}
+	var filter = { 'user' : req.body.user };
+	var property = req.body.property;
+	var newValue = req.body.newValue;
+	var jsonObj = {};
+	jsonObj[property] = newValue
+	var action = { '$set' : jsonObj };
 
-app.use('\edit', (req, res) => {
-	var filter = { 'id' : req.query.id };
-	var property = req.query.property;
-	var newValue = req.query.newValue;
-	var action = { '$set' : { property : newValue } };
+	Post.findOneAndUpdate( filter, action, (err, orig) => {
+		if (err) {
+		    res.type('html').status(400);
+		    console.log('uh oh' + err);
+			res.json({'status': 'error'});
+		    res.write(err);
+		} else if (!orig) {
+			res.json({'status': 'No post matched that data.'});
+		} else {
+			res.json({'status': 'Success! Post updated.'});
+		}
+	})
 
 })
 
@@ -152,7 +171,7 @@ app.use('\edit', (req, res) => {
 
 app.use('/public', express.static('public'));
 
-app.use('/', (req, res) => { res.redirect('/public/postform.html'); } );
+app.use('/', (req, res) => { res.redirect('/public/homepage.html'); } );
 
 app.listen(3000,  () => {
 	console.log('Listening on port 3000');

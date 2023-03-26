@@ -106,9 +106,9 @@ app.use('/all', (req, res) => {
 app.use('/singleUser', (req, res) => {
 	// construct the query object
 	var filter = {};
-	if (req.query.user) {
+	if (req.body.user && (req.body.user.length > 0)) {
 	    // if there's a name in the query parameter, use it here
-	    filter = { "id" : req.query.user };
+	    filter = { "id" : req.body.user };
 	} else {
 		res.json({"status" : "No user was specified."});
 		return;
@@ -139,13 +139,13 @@ app.use('/singleUser', (req, res) => {
 
 // endpoint to edit a post
 app.use('/edit', (req, res) => {
-	if (!req.query.user || !req.query.property || !req.query.newValue) {
-		res.json({'status': 'Missing data. Please provide user, property, and newValue'});
+	if (!req.body.user || !req.body.property || !req.body.newValue) {
+		res.json({'status': 'Missing data. Please provide username, property, and new value.'});
 		return;
 	}
-	var filter = { 'user' : req.query.user };
-	var property = req.query.property;
-	var newValue = req.query.newValue;
+	var filter = { 'user' : req.body.user };
+	var property = req.body.property;
+	var newValue = req.body.newValue;
 	var jsonObj = {};
 	jsonObj[property] = newValue
 	var action = { '$set' : jsonObj };

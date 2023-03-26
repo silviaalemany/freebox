@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <title>Freebox</title>
+    </head>
+    <body>
+        <h1>Welcome to Freebox!</h1>
+        <button onclick="addUser()">Add a user</button>
+        <button onclick="addPost()">Add a post</button>
+        <button onclick="seeAllPosts()">See all posts</button>
+
+        <script>
+            function addUser() {
+                window.location.href = "/public/userform.html";
+            }
+
+            function addPost() {
+                window.location.href = "/public/postform.html";
+            }
+
+            function seeAllPosts() {
+                window.location.href = "/all";
+            }
+        </script>
+    </body>
+    
+
+    
+</html>

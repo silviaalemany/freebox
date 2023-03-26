@@ -139,10 +139,27 @@ app.use('/singleUser', (req, res) => {
 
 
 app.use('\edit', (req, res) => {
+	if (!req.query.id || !req.query.property || !req.query.newValue) {
+		res.json({'status': 'Missing data. Please provide id, property, and newValue'});
+		return;
+	}
 	var filter = { 'id' : req.query.id };
 	var property = req.query.property;
 	var newValue = req.query.newValue;
 	var action = { '$set' : { property : newValue } };
+
+	Post.findOneAndUpdate( filter, action, (err, orig) => {
+		if (err) {
+		    res.type('html').status(400);
+		    console.log('uh oh' + err);
+			res.json({'status': 'error'});
+		    res.write(err);
+		} else if (!orig) {
+			res.json({'status': 'No post matched that data.'});
+		} else {
+			res.json({'status': 'Success! Post updated.'});
+		}
+	})
 
 })
 
@@ -152,7 +169,7 @@ app.use('\edit', (req, res) => {
 
 app.use('/public', express.static('public'));
 
-app.use('/', (req, res) => { res.redirect('/public/postform.html'); } );
+app.use('/', (req, res) => { res.redirect('/public/homepage.html'); } );
 
 app.listen(3000,  () => {
 	console.log('Listening on port 3000');

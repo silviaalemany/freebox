@@ -18,7 +18,7 @@ var User = require('./User.js');
 app.use('/createPost', (req, res) => {
 	// construct the Post from the form data which is in the request body
 	var newPost = new Post ({
-		user: req.body.userID,
+		user: req.body.user,
 		price: req.body.price,
 		desc: req.body.desc,
 		available: req.body.status
@@ -137,16 +137,20 @@ app.use('/singleUser', (req, res) => {
 	});
 });
 
-
-app.use('\edit', (req, res) => {
-	if (!req.query.id || !req.query.property || !req.query.newValue) {
-		res.json({'status': 'Missing data. Please provide id, property, and newValue'});
+// endpoint to edit a post
+app.use('/edit', (req, res) => {
+	if (!req.query.user || !req.query.property || !req.query.newValue) {
+		res.json({'status': 'Missing data. Please provide user, property, and newValue'});
 		return;
 	}
-	var filter = { 'id' : req.query.id };
+	var filter = { 'user' : req.query.user };
 	var property = req.query.property;
 	var newValue = req.query.newValue;
-	var action = { '$set' : { property : newValue } };
+	var jsonObj = {};
+	jsonObj[property] = newValue
+	var action = { '$set' : jsonObj };
+
+	console.log(action);
 
 	Post.findOneAndUpdate( filter, action, (err, orig) => {
 		if (err) {

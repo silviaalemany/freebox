@@ -204,7 +204,13 @@ app.use('/viewPost', (req, res) => {
 //endpoint for updating tags 
 app.use('/addTag', (req, res) => {
 	var id = req.body.ID 
-	var tags = req.body.tags
+	var tags = req.body.source
+
+	if (!req.body.ID || !req.body.source) {
+		res.json({'status': 'Missing data. Please provide pos, property, and new value.'});
+		return;
+	}
+
 
 
 

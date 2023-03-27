@@ -13,7 +13,9 @@ var postSchema = new Schema({
         // desc is user description (supplemental)
         desc: String,
         // status: true if still available to purchase
-        status: Boolean
+        status: Boolean,
+        //tags: strings to define object 
+        tags: [String]
 
     });
 

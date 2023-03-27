@@ -16,17 +16,14 @@ var User = require('./User.js');
 // endpoint for creating a new post
 // this is the action of "postform.html"
 app.use('/createPost', (req, res) => {
-
-	tags = req.body.source
-	console.log(tags)
 	// construct the Post from the form data which is in the request body
 	var newPost = new Post ({
 		_id: mongoose.Types.ObjectId().toHexString(),
 		user: req.body.user,
 		price: req.body.price,
 		desc: req.body.desc,
-		available: req.body.status
-
+		available: req.body.status,
+		tags: req.body.source
 	    });
 
 	// save the person to the database
@@ -221,13 +218,14 @@ app.use('/viewPost', (req, res) => {
 		    res.write(err);
 		}
 		else if (!posts || posts.length == 0) {
-			res.json({'status' : 'User not found'});
+			res.json({'status' : 'Post not found'});
 		} else {
 			res.type('html').status(400);
 			posts = { 'user' : posts.user,
 					'price' : posts.price, 
 					'description' : posts.desc,
-					'status' : posts.status };
+					'status' : posts.status,
+					'tags': posts.tags};
 			res.type('html').status(200);
 			res.json({
 				'post': posts
@@ -236,6 +234,38 @@ app.use('/viewPost', (req, res) => {
 	});
 });
 
+//endpoint for updating tags 
+app.use('/addTag', (req, res) => {
+	if (!req.body.ID || !req.body.source) {
+		res.json({'status': 'Missing data. Please provide pos, property, and new value.'});
+		return;
+	}
+
+	var filter = { 'id' : req.body.source };
+	var tags = req.body.source;
+
+	var jsonObj = {};
+	jsonObj[property] = tags
+	var action = { '$set' : jsonObj };
+
+	Post.findOneAndUpdate( filter, action, (err, orig) => {
+		if (err) {
+		    res.type('html').status(400);
+		    console.log('uh oh' + err);
+			res.json({'status': 'error'});
+		    res.write(err);
+		} else if (!orig) {
+			res.json({'status': 'No post matched that data.'});
+		} else {
+			res.json({'status': 'Success! Post updated.'});
+		}
+	})
+
+
+
+
+
+}); 
 
 
 

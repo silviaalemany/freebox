@@ -14,9 +14,9 @@ var userSchema = new Schema({
         // .edu email 
         email: String,
         // personal bio/info (could include pronouns, etc)
-        bio: Boolean
+        bio: String
 
     });
 
-// export postSchema as a class called Post
-module.exports = mongoose.model('Post', postSchema);
+// export userSchema as a class called User
+module.exports = mongoose.model('User', userSchema);

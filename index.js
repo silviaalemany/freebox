@@ -44,6 +44,9 @@ app.use('/createPost', (req, res) => {
 		status: true,
 		tags: tagsInput
 	});
+		available: req.body.status,
+		tags: req.body.source
+	    });
 
 	// save the person to the database
 	newPost.save( (err) => { 
@@ -246,7 +249,7 @@ app.use('/viewPost', (req, res) => {
 		    res.write(err);
 		}
 		else if (!posts || posts.length == 0) {
-			res.json({'status' : 'User not found'});
+			res.json({'status' : 'Post not found'});
 		} else {
 			res.type('html').status(400);
 			posts = { 
@@ -254,7 +257,8 @@ app.use('/viewPost', (req, res) => {
 					'user' : posts.user,
 					'price' : posts.price, 
 					'description' : posts.desc,
-					'status' : posts.status };
+					'status' : posts.status,
+					'tags': posts.tags};
 			res.type('html').status(200);
 			res.json({
 				'found': posts
@@ -263,6 +267,38 @@ app.use('/viewPost', (req, res) => {
 	});
 });
 
+//endpoint for updating tags 
+app.use('/addTag', (req, res) => {
+	if (!req.body.ID || !req.body.source) {
+		res.json({'status': 'Missing data. Please provide pos, property, and new value.'});
+		return;
+	}
+
+	var filter = { 'id' : req.body.source };
+	var tags = req.body.source;
+
+	var jsonObj = {};
+	jsonObj[property] = tags
+	var action = { '$set' : jsonObj };
+
+	Post.findOneAndUpdate( filter, action, (err, orig) => {
+		if (err) {
+		    res.type('html').status(400);
+		    console.log('uh oh' + err);
+			res.json({'status': 'error'});
+		    res.write(err);
+		} else if (!orig) {
+			res.json({'status': 'No post matched that data.'});
+		} else {
+			res.json({'status': 'Success! Post updated.'});
+		}
+	})
+
+
+
+
+
+}); 
 
 
 

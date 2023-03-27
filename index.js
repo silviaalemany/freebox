@@ -16,16 +16,13 @@ var User = require('./User.js');
 // endpoint for creating a new post
 // this is the action of "postform.html"
 app.use('/createPost', (req, res) => {
-
-	tags = req.body.source
-	console.log(tags)
 	// construct the Post from the form data which is in the request body
 	var newPost = new Post ({
 		user: req.body.user,
 		price: req.body.price,
 		desc: req.body.desc,
-		available: req.body.status
-
+		available: req.body.status,
+		tags: req.body.source
 	    });
 
 	// save the person to the database
@@ -204,6 +201,15 @@ app.use('/viewPost', (req, res) => {
 	});
 });
 
+//endpoint for updating tags 
+app.use('/addTag', (req, res) => {
+	var id = req.body.ID 
+	var tags = req.body.tags
+
+
+
+
+}); 
 
 
 

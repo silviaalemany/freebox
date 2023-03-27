@@ -44,9 +44,9 @@ app.use('/createPost', (req, res) => {
 		status: true,
 		tags: tagsInput
 	});
-		available: req.body.status,
-		tags: req.body.source
-	    });
+		//available: req.body.status,
+		//tags: req.body.source
+	   // });
 
 	// save the person to the database
 	newPost.save( (err) => { 
@@ -268,17 +268,21 @@ app.use('/viewPost', (req, res) => {
 });
 
 //endpoint for updating tags 
+/** 
 app.use('/addTag', (req, res) => {
+	console.log(req.body.ID);
+	console.log(req.body.source);
+
 	if (!req.body.ID || !req.body.source) {
-		res.json({'status': 'Missing data. Please provide pos, property, and new value.'});
+		res.json({'status': 'Missing data.'});
 		return;
 	}
 
-	var filter = { 'id' : req.body.source };
+	var filter = { 'id' : req.body.ID };
 	var tags = req.body.source;
 
 	var jsonObj = {};
-	jsonObj[property] = tags
+	jsonObj['tags'] = tags
 	var action = { '$set' : jsonObj };
 
 	Post.findOneAndUpdate( filter, action, (err, orig) => {
@@ -298,8 +302,41 @@ app.use('/addTag', (req, res) => {
 
 
 
-}); 
+}); */
 
+app.use('/deletePost', (req, res) => {
+	console.log(req.body.posts);
+	
+
+	if (!req.body.posts) {
+		res.json({'status': 'Missing data.'});
+		return;
+	}
+
+	var filter = { 'id' : req.body.posts };
+	
+
+	Post.findOneAndDelete(filter,(err,post) => {
+		if(err){
+			res.type('html').status(400);
+		    console.log('uh oh' + err);
+			res.json({'status': 'error'});
+		    res.write(err);
+		}
+		else if(!post){
+			res.json({'status': 'No post matched that data.'});
+		} 
+		else {
+			res.json({'status': 'Success! Post deleted.'});
+		}
+
+	});
+
+	
+
+
+
+}); 
 
 
 /*************************************************/

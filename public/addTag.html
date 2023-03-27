@@ -1,17 +1,13 @@
 <html>
     <head>
-        <title>Freebox: Add Post</title>
+        <title>Freebox: Add Tag</title>
         <link rel="stylesheet" type="text/css" href="styles.css" />
     </head>
 
     <body>
-        <form action="/createPost" method="post">
+        <form action="/addTag" method="post">
 
-            Username: <input type="text" name="user">
-            <p>
-            Price: <input type="text" name="price">
-            <p>
-            Description: <input type="text" name="desc">
+            Post ID: <input type="text" name="ID">
             <p>
                 Tags: 
                 <input type="checkbox" id="clothes" name="source" value="clothes"> <label for="clothes">Clothes</label>
@@ -19,6 +15,7 @@
                 <input type="checkbox" id="technology" name="source" value="technology"> <label for="technology">Technology</label>
                 <input type="checkbox" id="academicsupplies" name="source" value="academicsupplies"> <label for="academicsupplies">Academic Supplies</label>
             
+            <p>
             <input type="submit" value="Submit form!">
             
         </form>

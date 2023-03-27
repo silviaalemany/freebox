@@ -11,9 +11,17 @@
         <p></p>
         <button onclick="seeAllPosts()">See all posts</button>
         <p></p>
+        <button onclick="seeAllUsers()">See all Users</button>
+        <p></p>
         <button onclick="singleUser()">Search Users</button>
         <p></p>
+        <button onclick="singlePost()">Search Posts</button>
+        <p></p>
         <button onclick="editPost()">Edit Post</button>
+        <p></p>
+        <button onclick="viewPost()">View Post</button>
+        <p></p>
+        <button onclick="deletePost()">Delete Post</button>
 
         <script>
             function addUser() {
@@ -25,15 +33,31 @@
             }
 
             function seeAllPosts() {
-                window.location.href = "/all";
+                window.location.href = "/allPosts";
+            }
+
+            function seeAllUsers() {
+                window.location.href = "/allUsers";
             }
 
             function singleUser() {
                 window.location.href = "/public/userSearch.html";
             }
+            function singlePost() {
+                window.location.href = "/public/postSearch.html";
+            }
 
             function editPost() {
                 window.location.href = "/public/editPost.html";
+            }
+
+            function viewPost() {
+                window.location.href = "/public/postSearch.html";
+            }
+
+
+            function deletePost() {
+                window.location.href = "/public/deletePost.html";
             }
         </script>
     </body>

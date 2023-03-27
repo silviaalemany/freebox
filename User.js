@@ -8,11 +8,11 @@ var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
         // user's name
-        name: {type: String, required: true, unique: true},
+        name: {type: String, required: true},
         // userID (kind of like an @, or username)
-        id: String,
+        id: {type: String, required: true, unique: true},
         // .edu email 
-        email: String,
+        email: {type: String, required: true, unique: true},
         // personal bio/info (could include pronouns, etc)
         bio: String
 

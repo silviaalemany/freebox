@@ -1,11 +1,10 @@
 // set up Express
 var express = require('express');
 var app = express();
-
 // set up BodyParser
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
-
+var mongoose = require('mongoose');
 // import the Post class from Post.js
 var Post = require('./Post.js');
 // import the User class from User.js
@@ -16,13 +15,38 @@ var User = require('./User.js');
 // endpoint for creating a new post
 // this is the action of "postform.html"
 app.use('/createPost', (req, res) => {
+	if (!req.body.user || !req.body.price) {
+		res.json({'status': 'Missing data. Please provide username of post creator and price.'});
+		return;
+	}
+	filter = {"id" : req.body.user};
+	User.find(filter, (err, usr) => {
+		if (err) {
+		    res.type('html').status(400);
+		    console.log('uh oh' + err);
+			res.json({'status': 'error'});
+		    res.write(err);
+			return;
+		}
+		else if (!usr || usr.length == 0){
+			res.json({'status' : 'user does not exist'});
+			return;
+		}
+	})
+	tagsInput = req.body.source;
+	
 	// construct the Post from the form data which is in the request body
 	var newPost = new Post ({
+		_id: mongoose.Types.ObjectId().toHexString(),
 		user: req.body.user,
 		price: req.body.price,
 		desc: req.body.desc,
-		available: req.body.status
-	    });
+		status: true,
+		tags: tagsInput
+	});
+		//available: req.body.status,
+		//tags: req.body.source
+	   // });
 
 	// save the person to the database
 	newPost.save( (err) => { 
@@ -44,6 +68,10 @@ app.use('/createPost', (req, res) => {
 // endpoint for creating a new user
 // this is the action of "personform.html"
 app.use('/createUser', (req, res) => {
+	if (!req.body.name || !req.body.id || !req.body.email) {
+		res.json({'status': 'Missing data. Please provide name, username, and email.'});
+		return;
+	}
 	// construct the Post from the form data which is in the request body
 	var newUser = new User ({
 		name: req.body.name,
@@ -70,7 +98,7 @@ app.use('/createUser', (req, res) => {
 
 
 // endpoint for showing all the posts
-app.use('/all', (req, res) => {
+app.use('/allPosts', (req, res) => {
 	Post.find({}, (err, post) => {
 		if (err) {
 		    res.type('html').status(400);
@@ -79,13 +107,14 @@ app.use('/all', (req, res) => {
 		    res.write(err);
 		}
 		else if (!post || post.length == 0){
-			res.json({'status' : 'post not found'});
+			res.json({'status' : 'no posts yet'});
 		} else {
 			res.type('html').status(400);
 			var allRecords = [];
 			for(let i = 0; i < post.length; i++)
 			{
 				allRecords.push({
+					'id' : post[i]._id,
 					'user' : post[i].user,
 					'price' : post[i].price,
 					'desc' : post[i].desc,
@@ -98,9 +127,40 @@ app.use('/all', (req, res) => {
 				'status' : 'successful'
 			});
 		}
-	});
+	}).sort({ '_id': 'asc' }); // this sorts them BEFORE rendering the results
 });
 
+// endpoint for showing all the users
+app.use('/allUsers', (req, res) => {
+	User.find({}, (err, usr) => {
+		if (err) {
+		    res.type('html').status(400);
+		    console.log('uh oh' + err);
+			res.json({'status': 'error'});
+		    res.write(err);
+		}
+		else if (!usr || usr.length == 0){
+			res.json({'status' : 'no users yet'});
+		} else {
+			res.type('html').status(400);
+			var allRecords = [];
+			for(let i = 0; i < usr.length; i++)
+			{
+				allRecords.push({
+					'name' : usr[i].name,
+					'username' : usr[i].id,
+					'email' : usr[i].email,
+					'bio' : usr[i].bio,
+				});
+			}
+			res.type('html').status(200);
+			res.json( {
+				'entries': allRecords,
+				'status' : 'successful'
+			});
+		}
+	}).sort({ 'name': 'asc' }); // this sorts them BEFORE rendering the results
+});
 
 // endpoint for showing a single user
 app.use('/singleUser', (req, res) => {
@@ -139,15 +199,90 @@ app.use('/singleUser', (req, res) => {
 
 // endpoint to edit a post
 app.use('/edit', (req, res) => {
-	if (!req.body.user || !req.body.property || !req.body.newValue) {
-		res.json({'status': 'Missing data. Please provide username, property, and new value.'});
+	if (!req.body._id || !req.body.property) {
+		res.json({'status': 'Missing data. Please provide post ID, property to edit, and new value.'});
 		return;
-	}
-	var filter = { 'user' : req.body.user };
+	} 
 	var property = req.body.property;
+	var filter = { '_id' : req.body._id };
 	var newValue = req.body.newValue;
 	var jsonObj = {};
 	jsonObj[property] = newValue
+	// if user wants to replace required field with nothing, don't let them!
+	if (!req.body.newValue && !(property == 'desc')) {
+		res.json({'status': 'Cannot delete a required field.'});
+		return;
+	}
+	var action = { '$set' : jsonObj };
+
+	Post.findOneAndUpdate( filter, action, (err, orig) => {
+		if (err) {
+		    res.type('html').status(400);
+		    console.log('uh oh' + err);
+			res.json({'status': 'error'});
+		    res.write(err);
+		} else if (!orig) {
+			res.json({'status': 'No post matched that data.'});
+		} else {
+			res.json({'status': 'Success! Post updated.'});
+		}
+	})
+});
+
+//endpoint for viewing a post 
+// view post by post id 
+app.use('/viewPost', (req, res) => {
+    var filter = {};
+	if (req.body.posts && (req.body.posts.length > 0)) {
+	    // if there's a name in the query parameter, use it here
+	    filter = { "_id" : req.body.posts };
+	} else {
+		res.json({"status" : "No post was specified."});
+		return;
+	}
+
+    Post.findOne(filter, (err, posts) => {
+		if (err) {
+		    res.type('html').status(400);
+		    console.log('uh oh' + err);
+			res.json({'status': 'error'});
+		    res.write(err);
+		}
+		else if (!posts || posts.length == 0) {
+			res.json({'status' : 'Post not found'});
+		} else {
+			res.type('html').status(400);
+			posts = { 
+					'id': posts._id,
+					'user' : posts.user,
+					'price' : posts.price, 
+					'description' : posts.desc,
+					'status' : posts.status,
+					'tags': posts.tags};
+			res.type('html').status(200);
+			res.json({
+				'found': posts
+			});
+		}
+	});
+});
+
+//endpoint for updating tags 
+/** 
+app.use('/addTag', (req, res) => {
+	console.log(req.body.ID);
+	console.log(req.body.source);
+
+	if (!req.body.ID || !req.body.source) {
+		res.json({'status': 'Missing data.'});
+		return;
+	}
+
+	var filter = { 'id' : req.body.ID };
+	var tags = req.body.source;
+
+	var jsonObj = {};
+	jsonObj['tags'] = tags
 	var action = { '$set' : jsonObj };
 
 	Post.findOneAndUpdate( filter, action, (err, orig) => {
@@ -163,8 +298,45 @@ app.use('/edit', (req, res) => {
 		}
 	})
 
-})
 
+
+
+
+}); */
+
+app.use('/deletePost', (req, res) => {
+	console.log(req.body.posts);
+	
+
+	if (!req.body.posts) {
+		res.json({'status': 'Missing data.'});
+		return;
+	}
+
+	var filter = { 'id' : req.body.posts };
+	
+
+	Post.findOneAndDelete(filter,(err,post) => {
+		if(err){
+			res.type('html').status(400);
+		    console.log('uh oh' + err);
+			res.json({'status': 'error'});
+		    res.write(err);
+		}
+		else if(!post){
+			res.json({'status': 'No post matched that data.'});
+		} 
+		else {
+			res.json({'status': 'Success! Post deleted.'});
+		}
+
+	});
+
+	
+
+
+
+}); 
 
 
 /*************************************************/

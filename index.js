@@ -18,6 +18,7 @@ var User = require('./User.js');
 app.use('/createPost', (req, res) => {
 	// construct the Post from the form data which is in the request body
 	var newPost = new Post ({
+		_id: mongoose.Types.ObjectId().toHexString(),
 		user: req.body.user,
 		price: req.body.price,
 		desc: req.body.desc,
@@ -71,7 +72,7 @@ app.use('/createUser', (req, res) => {
 
 
 // endpoint for showing all the posts
-app.use('/all', (req, res) => {
+app.use('/allPosts', (req, res) => {
 	Post.find({}, (err, post) => {
 		if (err) {
 		    res.type('html').status(400);
@@ -80,7 +81,7 @@ app.use('/all', (req, res) => {
 		    res.write(err);
 		}
 		else if (!post || post.length == 0){
-			res.json({'status' : 'post not found'});
+			res.json({'status' : 'no posts yet'});
 		} else {
 			res.type('html').status(400);
 			var allRecords = [];
@@ -99,9 +100,40 @@ app.use('/all', (req, res) => {
 				'status' : 'successful'
 			});
 		}
-	});
+	}).sort({ '_id': 'asc' }); // this sorts them BEFORE rendering the results
 });
 
+// endpoint for showing all the uses
+app.use('/allUsers', (req, res) => {
+	Post.find({}, (err, post) => {
+		if (err) {
+		    res.type('html').status(400);
+		    console.log('uh oh' + err);
+			res.json({'status': 'error'});
+		    res.write(err);
+		}
+		else if (!post || post.length == 0){
+			res.json({'status' : 'no users yet'});
+		} else {
+			res.type('html').status(400);
+			var allRecords = [];
+			for(let i = 0; i < post.length; i++)
+			{
+				allRecords.push({
+					'name' : post[i].name,
+					'username' : post[i].id,
+					'email' : post[i].email,
+					'bio' : post[i].bio,
+				});
+			}
+			res.type('html').status(200);
+			res.json( {
+				'entries': allRecords,
+				'status' : 'successful'
+			});
+		}
+	}).sort({ 'name': 'asc' }); // this sorts them BEFORE rendering the results
+});
 
 // endpoint for showing a single user
 app.use('/singleUser', (req, res) => {

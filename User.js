@@ -14,7 +14,7 @@ var userSchema = new Schema({
         // .edu email 
         email: {type: String, required: true, unique: true},
         // personal bio/info (could include pronouns, etc)
-        bio: {type: String}
+        bio: String
 
     });
 

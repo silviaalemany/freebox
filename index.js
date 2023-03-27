@@ -16,12 +16,16 @@ var User = require('./User.js');
 // endpoint for creating a new post
 // this is the action of "postform.html"
 app.use('/createPost', (req, res) => {
+
+	tags = req.body.source
+	console.log(tags)
 	// construct the Post from the form data which is in the request body
 	var newPost = new Post ({
 		user: req.body.user,
 		price: req.body.price,
 		desc: req.body.desc,
 		available: req.body.status
+
 	    });
 
 	// save the person to the database
@@ -163,7 +167,43 @@ app.use('/edit', (req, res) => {
 		}
 	})
 
-})
+}); 
+
+//endpoint for viewing a post 
+// view post by post id 
+app.use('/viewPost', (req, res) => {
+    var filter = {};
+	if (req.body.posts && (req.body.posts.length > 0)) {
+	    // if there's a name in the query parameter, use it here
+	    filter = { "id" : req.body.posts };
+	} else {
+		res.json({"status" : "No post was specified."});
+		return;
+	}
+
+    Post.findOne(filter, (err, posts) => {
+		if (err) {
+		    res.type('html').status(400);
+		    console.log('uh oh' + err);
+			res.json({'status': 'error'});
+		    res.write(err);
+		}
+		else if (!posts || posts.length == 0) {
+			res.json({'status' : 'User not found'});
+		} else {
+			res.type('html').status(400);
+			posts = { 'user' : posts.user,
+					'price' : posts.price, 
+					'description' : posts.desc,
+					'status' : posts.status };
+			res.type('html').status(200);
+			res.json({
+				'post': posts
+			});
+		}
+	});
+});
+
 
 
 

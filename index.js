@@ -11,7 +11,7 @@ var Post = require('./Post.js');
 
 /***************************************/
 
-// endpoint for showing all the people
+// endpoint for showing all posts
 app.use('/all', (req, res) => {
 	suggestion.find({}, (err, post) => {
 		if (err) {
@@ -21,13 +21,14 @@ app.use('/all', (req, res) => {
 		    res.write(err);
 		}
 		else if (!post || post.length == 0){
-			res.json({'status' : 'post not found'});
+			res.json({'status' : 'no posts yet'});
 		} else {
 			res.type('html').status(400);
 			var allRecords = [];
 			for(let i = 0; i < post.length; i++)
 			{
 				allRecords.push({
+					'id' : post[i]._id,
 					'user' : post[i].user,
 					'price' : post[i].price,
 					'desc' : post[i].desc,

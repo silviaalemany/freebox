@@ -7,13 +7,14 @@ mongoose.connect('mongodb://127.0.0.1:27017/myDatabase');
 var Schema = mongoose.Schema;
 
 var postSchema = new Schema({
+        _id: String,
         user: {type: String, required: true, unique: true},
         // price (USD)
-        price: Number,
+        price: {type: Number, required: true},
         // desc is user description (supplemental)
-        desc: String,
+        desc: {type: String},
         // status: true if still available to purchase
-        status: Boolean,
+        status: {type: Boolean, required: true},
         //tags: strings to define object 
         tags: [String]
 

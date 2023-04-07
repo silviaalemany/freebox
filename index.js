@@ -332,12 +332,12 @@ app.use('/deletePost', (req, res) => {
 
 	});
 
-	
-
-
-
 }); 
 
+app.use('/test', (req, res) => {
+	var data = {'message' : 'It works!'};
+	res.json(data);
+}); 
 
 /*************************************************/
 

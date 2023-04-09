@@ -96,6 +96,35 @@ app.use('/createUser', (req, res) => {
     }
     );
 
+	app.use('/createUserApp', (req, res) => {
+		if (!req.query.name || !req.query.id || !req.query.email) {
+			res.json({'status': 'Missing data. Please provide name, username, and email.'});
+			return;
+		}
+		// construct the Post from the form data which is in the request body
+		var newUser = new User ({
+			name: req.query.name,
+			id: req.query.id,
+			email: req.query.email,
+			bio: req.query.bio
+			});
+	
+		// save the person to the database
+		newUser.save( (err) => { 
+			if (err) {
+				res.type('html').status(200);
+				res.write('uh oh: ' + err);
+				console.log(err);
+				res.end();
+			}
+			else {
+				// display the "successfull created" message
+				res.send('successfully added new user ' + newUser.name + ' to the database.');
+			}
+			} ); 
+		}
+		);
+
 
 // endpoint for showing all the posts
 app.use('/allPosts', (req, res) => {
@@ -175,6 +204,7 @@ app.use('/singleUser', (req, res) => {
 	}
 
 	User.findOne(filter, (err, user) => {
+		console.log(filter);
 		if (err) {
 		    res.type('html').status(400);
 		    console.log('uh oh' + err);
@@ -229,6 +259,37 @@ app.use('/edit', (req, res) => {
 	})
 });
 
+// endpoint to edit a user on the app 
+app.use('/editUserApp', (req, res) => {
+	if (!req.query.id || !req.query.property) {
+		res.json({'status': 'Missing data. Please provide user, property to edit, and new value.'});
+		return;
+	} 
+	var property = req.query.property;
+	var filter = { 'id' : req.query.id };
+	var newValue = req.query.newValue;
+	var jsonObj = {};
+	jsonObj[property] = newValue
+	// if user wants to replace required field with nothing, don't let them!
+	if (!req.query.newValue) {
+		res.json({'status': 'Cannot delete a required field.'});
+		return;
+	}
+	var action = { '$set' : jsonObj };
+
+	User.findOneAndUpdate( filter, action, (err, orig) => {
+		if (err) {
+		    res.type('html').status(400);
+		    console.log('uh oh' + err);
+			res.json({'status': 'error'});
+		    res.write(err);
+		} else if (!orig) {
+			res.json({'status': 'No post matched that data.'});
+		} else {
+			res.json({'status': 'Success! Post updated.'});
+		}
+	})
+});
 //endpoint for viewing a post 
 // view post by post id 
 app.use('/viewPost', (req, res) => {
@@ -332,12 +393,12 @@ app.use('/deletePost', (req, res) => {
 
 	});
 
-	
-
-
-
 }); 
 
+app.use('/test', (req, res) => {
+	var data = {'message' : 'It works!'};
+	res.json(data);
+}); 
 
 /*************************************************/
 

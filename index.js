@@ -147,34 +147,33 @@ app.use('/createUser', (req, res) => {
     });
 
 app.use('/createUserApp', (req, res) => {
-	if (!req.query.name || !req.query.id || !req.query.email) {
-		res.json({'status': 'Missing data. Please provide name, username, and email.'});
-		return;
-	}
-	// construct the Post from the form data which is in the request body
-	var newUser = new User ({
-		name: req.query.name,
-		id: req.query.id,
-		email: req.query.email,
-		bio: req.query.bio
-		});
-
-	// save the person to the database
-	newUser.save( (err) => { 
-		if (err) {
-			res.type('html').status(200);
-			res.write('uh oh: ' + err);
-			console.log(err);
-			res.end();
+		if (!req.query.name || !req.query.id || !req.query.email) {
+			res.json({'status': 'Missing data. Please provide name, username, and email.'});
+			return;
 		}
-		else {
-			res.type('html').status(400);
-			// display the "successfull created" message
-			res.send('successfully added new user ' + newUser.name + ' to the database.');
-			res.end();
+		// construct the Post from the form data which is in the request body
+		var newUser = new User ({
+			name: req.query.name,
+			id: req.query.id,
+			email: req.query.email,
+			bio: req.query.bio
+			});
+	
+		// save the person to the database
+		newUser.save( (err) => { 
+			if (err) {
+				res.type('html').status(200);
+				res.json({'status' : err});
+				console.log(err);
+				res.end();
+			}
+			else {
+				// display the "successfull created" message
+				res.send({'status' :'successfully added new user ' + newUser.name + ' to the database.'});
+			}
+			} ); 
 		}
-		} ); 
-	});
+		);
 
 
 // endpoint for showing all the posts

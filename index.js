@@ -152,7 +152,7 @@ app.use('/createUserApp', (req, res) => {
 		newUser.save( (err) => { 
 			if (err) {
 				res.type('html').status(200);
-				res.json({'status' : err});
+				res.json({'status' : "hi"});
 				console.log(err);
 				res.end();
 			}

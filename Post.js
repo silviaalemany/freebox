@@ -8,7 +8,7 @@ var Schema = mongoose.Schema;
 
 var postSchema = new Schema({
         _id: String,
-        user: {type: String, required: true, unique: true},
+        user: {type: String, required: true},
         // price (USD)
         price: {type: Number, required: true},
         // desc is user description (supplemental)

@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class userLookup extends AppCompatActivity {
     EditText inputUserName;
 
-
+    protected String finalDisplay;
     protected String message;
 
     protected void onCreate(Bundle savedInstance){
@@ -36,7 +37,7 @@ public class userLookup extends AppCompatActivity {
 
         TextView tv = findViewById(R.id.output);
 
-        String id = inputUserName.getText().toString();
+        String user = inputUserName.getText().toString();
 
         try {
             ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -46,7 +47,7 @@ public class userLookup extends AppCompatActivity {
                             // and that it has a /test endpoint that returns a JSON object with
                             // a field called "message"
 
-                            URL url = new URL("http://10.0.2.2:3000/singleUserApp?id=" + id);
+                            URL url = new URL("http://10.0.2.2:3000/singleUserApp?user=" + user);
 
                             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                             conn.setRequestMethod("GET");
@@ -60,11 +61,34 @@ public class userLookup extends AppCompatActivity {
                             // need to set the instance variable in the Activity object
                             // because we cannot directly access the TextView from here
                             message = jo.getString("message");
+                            if (!message.equals("success")) {
+                                finalDisplay = message;
+                            } else {
+                                StringBuilder sb = new StringBuilder();
+                                sb.append(jo.getString("user") + "\n");
+                                JSONArray posts = jo.getJSONArray("store");
+                                sb.append(String.format("%d posts total.\n\n", posts.length()));
+                                for (int i = 0; i < posts.length(); i++){
+                                    JSONObject post = posts.getJSONObject(i);
+                                    String price = post.getString("price");
+                                    String desc = post.getString("desc");
+                                    boolean status = post.getBoolean("status");
+                                    sb.append(String.format("Post %d:\n Price: %s\n Description: %s\n",
+                                            i, price, desc));
+                                    if (status) {
+                                        sb.append("This is still available!\n\n");
+                                    } else {
+                                        sb.append("No longer available :(\n\n");
+                                    }
+                                }
 
+                                finalDisplay = sb.toString();
+
+                            }
                         }
                         catch (Exception e) {
                             e.printStackTrace();
-                            message = e.toString();
+                            finalDisplay = e.toString();
                         }
                     }
             );
@@ -75,9 +99,8 @@ public class userLookup extends AppCompatActivity {
             executor.awaitTermination(2, TimeUnit.SECONDS);
 
             // now we can set the status in the TextView
-            tv.setText(message);
-        }
-        catch (Exception e) {
+            tv.setText(finalDisplay);
+        } catch (Exception e) {
             // uh oh
             e.printStackTrace();
             tv.setText(e.toString());

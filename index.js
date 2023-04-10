@@ -29,7 +29,7 @@ app.use('/createPost', (req, res) => {
 			return;
 		}
 		else if (!usr || usr.length == 0){
-			res.json({'status' : 'user does not exist'});
+			res.json({'status' : 'user does not exist.'});
 			return;
 		}
 	})
@@ -58,11 +58,62 @@ app.use('/createPost', (req, res) => {
 		}
 		else {
 		    // display the "successfull created" message
-		    res.send('successfully added ' + newPost.user + '\'s post to the database');
+		    res.send('successfully added ' + newPost.user + '\'s post to the database.');
 		}
 	    } ); 
     }
     );
+
+// endpoint for creating a new post for the app
+// this is the action of "postform.html"
+app.use('/createPostApp', (req, res) => {
+	if (!req.body.user || !req.body.price) {
+		res.send('Missing data. Please provide username of post creator and price.');
+	}
+	filter = {"id" : req.body.user};
+	User.find(filter, (err, usr) => {
+		if (err) {
+		    res.type('html').status(400);
+		    console.log(err);
+		    res.write('uh oh ' + err);
+			res.end();
+		}
+		else if (!usr || usr.length == 0){
+			res.json({'status': 'User does not exist.'});
+
+		}
+	})
+	tagsInput = req.body.source;
+	
+	// construct the Post from the form data which is in the request body
+	var newPost = new Post ({
+		_id: mongoose.Types.ObjectId().toHexString(),
+		user: req.body.user,
+		price: req.body.price,
+		desc: req.body.desc,
+		status: true,
+		tags: tagsInput
+	});
+		//available: req.body.status,
+		//tags: req.body.source
+	   // });
+
+	// save the person to the database
+	newPost.save( (err) => { 
+		if (err) {
+		    res.type('html').status(200);
+		    res.write('uh oh: ' + err);
+		    console.log(err);
+		    res.end();
+		}
+		else {
+		    // display the "successfull created" message
+		    res.send({'status' : 'successfully added ' + newPost.user + '\'s post to the database.'});
+		}
+	    } ); 
+    }
+    );
+
 
 
 // endpoint for creating a new user
@@ -93,10 +144,9 @@ app.use('/createUser', (req, res) => {
 		    res.send('successfully added new user ' + newUser.name + ' to the database.');
 		}
 	    } ); 
-    }
-    );
+    });
 
-	app.use('/createUserApp', (req, res) => {
+app.use('/createUserApp', (req, res) => {
 		if (!req.query.name || !req.query.id || !req.query.email) {
 			res.json({'status': 'Missing data. Please provide name, username, and email.'});
 			return;
@@ -113,13 +163,13 @@ app.use('/createUser', (req, res) => {
 		newUser.save( (err) => { 
 			if (err) {
 				res.type('html').status(200);
-				res.write('uh oh: ' + err);
+				res.json({'status' : err});
 				console.log(err);
 				res.end();
 			}
 			else {
 				// display the "successfull created" message
-				res.send('successfully added new user ' + newUser.name + ' to the database.');
+				res.send({'status' :'successfully added new user ' + newUser.name + ' to the database.'});
 			}
 			} ); 
 		}
@@ -226,6 +276,41 @@ app.use('/singleUser', (req, res) => {
 		}
 	});
 });
+
+// endpoint for showing a single user
+app.use('/singleUserApp', (req, res) => {
+	// construct the query object
+	var filter = {};
+	if (req.body.user && (req.body.user.length > 0)) {
+	    // if there's a name in the query parameter, use it here
+	    filter = { "id" : req.body.user };
+	} else {
+		res.send("No user was specified.");
+		return;
+	}
+
+	User.findOne(filter, (err, user) => {
+		console.log(filter);
+		if (err) {
+		    res.type('html').status(400);
+		    res.write('uh oh: ' + err);
+		    console.log(err);
+		    res.end();
+		}
+		else if (!user || user.length == 0) {
+			res.send("User not found.");
+		} else {
+			res.type('html').status(400);
+			user = { 'name' : user.name,
+					'id' : user.id, 
+					'email' : user.email,
+					'bio' : user.bio };
+			res.type('html').status(200);
+			res.send("User: ${user.name}, ID: ${user.id}, Email: ${user.email}, Bio: ${user.bio}");
+		}
+	});
+});
+
 
 // endpoint to edit a post
 app.use('/edit', (req, res) => {

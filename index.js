@@ -67,48 +67,37 @@ app.use('/createPost', (req, res) => {
 // endpoint for creating a new post for the app
 // this is the action of "postform.html"
 app.use('/createPostApp', (req, res) => {
-	if (!req.body.user || !req.body.price) {
-		res.send('Missing data. Please provide username of post creator and price.');
+	if (!req.query.user || isNaN(req.query.price)) {
+		res.json({'message' : 'Missing data. Please provide username of post creator and price.'});
 	}
-	filter = {"id" : req.body.user};
+	filter = {"id" : req.query.user};
 	User.find(filter, (err, usr) => {
 		if (err) {
-		    res.type('html').status(400);
 		    console.log(err);
-		    res.write('uh oh ' + err);
-			res.end();
+		    res.json({"message" : 'Could not find user.'});
 		}
 		else if (!usr || usr.length == 0){
-			res.json({'status': 'User does not exist.'});
+			res.json({"message": 'User does not exist.'});
 
 		}
 	})
-	tagsInput = req.body.source;
 	
 	// construct the Post from the form data which is in the request body
 	var newPost = new Post ({
 		_id: mongoose.Types.ObjectId().toHexString(),
-		user: req.body.user,
-		price: req.body.price,
-		desc: req.body.desc,
+		user: req.query.user,
+		price: req.query.price,
+		desc: req.query.desc,
 		status: true,
-		tags: tagsInput
 	});
-		//available: req.body.status,
-		//tags: req.body.source
-	   // });
 
-	// save the person to the database
 	newPost.save( (err) => { 
 		if (err) {
-		    res.type('html').status(200);
-		    res.write('uh oh: ' + err);
-		    console.log(err);
-		    res.end();
+			console.log(err);
+		    res.json({'message' : 'Issue saving post.'});
 		}
 		else {
-		    // display the "successfull created" message
-		    res.send({'status' : 'successfully added ' + newPost.user + '\'s post to the database.'});
+		    res.json({'message' : 'Successfully added ' + newPost.user + '\'s post to the database.'});
 		}
 	    } ); 
     }
@@ -281,11 +270,11 @@ app.use('/singleUser', (req, res) => {
 app.use('/singleUserApp', (req, res) => {
 	// construct the query object
 	var filter = {};
-	if (req.body.user && (req.body.user.length > 0)) {
+	if (req.query.user && (req.query.user.length > 0)) {
 	    // if there's a name in the query parameter, use it here
-	    filter = { "id" : req.body.user };
+	    filter = { "id" : req.query.user };
 	} else {
-		res.send("No user was specified.");
+		res.json({"message" : "No user was specified."});
 		return;
 	}
 
@@ -298,7 +287,7 @@ app.use('/singleUserApp', (req, res) => {
 		    res.end();
 		}
 		else if (!user || user.length == 0) {
-			res.send("User not found.");
+			res.json({"message" : "User not found."});
 		} else {
 			res.type('html').status(400);
 			user = { 'name' : user.name,
@@ -306,7 +295,7 @@ app.use('/singleUserApp', (req, res) => {
 					'email' : user.email,
 					'bio' : user.bio };
 			res.type('html').status(200);
-			res.send("User: ${user.name}, ID: ${user.id}, Email: ${user.email}, Bio: ${user.bio}");
+			res.json({"message" : 'User: ' + user.name + ', ID: ' + user.id + ', Email: ' + user.email + ', Bio: ' + user.bio});
 		}
 	});
 });

@@ -36,7 +36,7 @@ public class userLookup extends AppCompatActivity {
 
         TextView tv = findViewById(R.id.output);
 
-        String id = inputUserName.getText().toString();
+        String user = inputUserName.getText().toString();
 
         try {
             ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -46,7 +46,7 @@ public class userLookup extends AppCompatActivity {
                             // and that it has a /test endpoint that returns a JSON object with
                             // a field called "message"
 
-                            URL url = new URL("http://10.0.2.2:3000/singleUserApp?id=" + id);
+                            URL url = new URL("http://10.0.2.2:3000/singleUserApp?user=" + user);
 
                             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                             conn.setRequestMethod("GET");

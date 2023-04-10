@@ -61,7 +61,7 @@ public class addUser extends AppCompatActivity{
                             URL url = new URL("http://10.0.2.2:3000/createUserApp?name=" + name
                             +"&id=" + username + "&email=" + email + "&bio=" + bio);
 
-                            Log.d("addUser",url.toString());
+
 
 
                             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -73,9 +73,11 @@ public class addUser extends AppCompatActivity{
 
                             JSONObject jo = new JSONObject(response);
 
+                            Log.d("test",jo.toString());
+
                             // need to set the instance variable in the Activity object
                             // because we cannot directly access the TextView from here
-                            message = jo.getString("message");
+                            message = jo.toString();
 
                         }
                         catch (Exception e) {

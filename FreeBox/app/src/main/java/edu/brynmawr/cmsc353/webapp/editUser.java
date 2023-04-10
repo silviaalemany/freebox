@@ -31,7 +31,7 @@ public class editUser extends AppCompatActivity{
 
     }
 
-    public void onConnectUserButtonClick(View v) {
+    public void onConnectUserEditButtonClick(View v) {
 
         inputUserName = (EditText) findViewById(R.id.inputUserName);
         inputProperty = (EditText) findViewById(R.id.inputProperty);
@@ -66,7 +66,7 @@ public class editUser extends AppCompatActivity{
 
                             // need to set the instance variable in the Activity object
                             // because we cannot directly access the TextView from here
-                            message = jo.getString("message");
+                            message = jo.toString();
 
                         }
                         catch (Exception e) {

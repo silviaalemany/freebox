@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class userLookup extends AppCompatActivity {
     EditText inputUserName;
 
-    String finalDisplay;
+    protected String finalDisplay;
     protected String message;
 
     protected void onCreate(Bundle savedInstance){
@@ -67,20 +67,28 @@ public class userLookup extends AppCompatActivity {
                                 StringBuilder sb = new StringBuilder();
                                 sb.append(jo.getString("user") + "\n");
                                 JSONArray posts = jo.getJSONArray("store");
-                                for (int i = 0; i <= posts.length(); i++){
-                                    String price = ((JSONObject) posts.get(i)).getString("price");
-                                    String desc = ((JSONObject) posts.get(i)).getString("desc");
-                                    String status = ((JSONObject) posts.get(i)).getString("status");
-                                    sb.append(String.format("Price: %s, Description: %s, Available %s\n",
-                                            price, desc, status));
+                                sb.append(String.format("%d posts total.\n\n", posts.length()));
+                                for (int i = 0; i < posts.length(); i++){
+                                    JSONObject post = posts.getJSONObject(i);
+                                    String price = post.getString("price");
+                                    String desc = post.getString("desc");
+                                    boolean status = post.getBoolean("status");
+                                    sb.append(String.format("Post %d:\n Price: %s\n Description: %s\n",
+                                            i, price, desc));
+                                    if (status) {
+                                        sb.append("This is still available!\n\n");
+                                    } else {
+                                        sb.append("No longer available :(\n\n");
+                                    }
                                 }
+
                                 finalDisplay = sb.toString();
 
                             }
                         }
                         catch (Exception e) {
                             e.printStackTrace();
-                            message = e.toString();
+                            finalDisplay = e.toString();
                         }
                     }
             );

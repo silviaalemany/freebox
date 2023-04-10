@@ -277,8 +277,7 @@ app.use('/singleUserApp', (req, res) => {
 		res.json({"message" : "No user was specified."});
 		return;
 	}
-
-	User.find(filter, (err, user) => {
+	User.findOne(filter, (err, user) => {
 		
 		console.log(filter);
 		if (err) {
@@ -300,11 +299,17 @@ app.use('/singleUserApp', (req, res) => {
 			Post.find(filter, (err, post) => {
 				if (err) {
 					console.log(err);
-					res.json({"message": "success", 'user' : 'User: ' + user.name + ', ID: ' + user.id + ', Email: ' + user.email + ', Bio: ' + user.bio, 'store' : {}});
+					res.json({
+						"message": "success", 
+						"user" : "User: " + user.name + ", ID: " + user.id + ", Email: " + user.email + ", Bio: " + user.bio, 
+						"store" : allRecords});
 
 				}
 				else if (!post || post.length == 0){
-					res.json({"message": "success", 'user' : 'User: ' + user.name + ', ID: ' + user.id + ', Email: ' + user.email + ', Bio: ' + user.bio, 'store' : {}});
+					res.json({
+						"message": "success", 
+						"user" : "User: " + user.name + ", ID: " + user.id + ", Email: " + user.email + ", Bio: " + user.bio, 
+						"store" : allRecords});
 		
 				} else {
 					res.type('html').status(400);
@@ -312,13 +317,13 @@ app.use('/singleUserApp', (req, res) => {
 						allRecords.push({
 							'price' : post[i].price,
 							'desc' : post[i].desc,
-							'status?' : post[i].status,
+							'status' : post[i].status,
 						});
 				}
 				res.type('html').status(200);
 				res.json( {"message" :"success",
-					'user' : 'User: ' + user.name + ', ID: ' + user.id + ', Email: ' + user.email + ', Bio: ' + user.bio,
-					'store': allRecords
+					"user" : "User: " + user.name + ", ID: " + user.id + ", Email: " + user.email + ", Bio: " + user.bio,
+					"store" : allRecords
 							
 				});
 			}

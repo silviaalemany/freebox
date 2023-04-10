@@ -278,13 +278,13 @@ app.use('/singleUserApp', (req, res) => {
 		return;
 	}
 
-	User.findOne(filter, (err, user) => {
+	User.find(filter, (err, user) => {
+		
 		console.log(filter);
 		if (err) {
 		    res.type('html').status(400);
-		    res.write('uh oh: ' + err);
-		    console.log(err);
-		    res.end();
+			console.log(err);
+		    res.json({"message" : "Issue encountered finding user."});
 		}
 		else if (!user || user.length == 0) {
 			res.json({"message" : "User not found."});
@@ -295,7 +295,34 @@ app.use('/singleUserApp', (req, res) => {
 					'email' : user.email,
 					'bio' : user.bio };
 			res.type('html').status(200);
-			res.json({"message" : 'User: ' + user.name + ', ID: ' + user.id + ', Email: ' + user.email + ', Bio: ' + user.bio});
+			filter = { "user" : user.id };
+			var allRecords = [];
+			Post.find(filter, (err, post) => {
+				if (err) {
+					console.log(err);
+					res.json({"message": "success", 'user' : 'User: ' + user.name + ', ID: ' + user.id + ', Email: ' + user.email + ', Bio: ' + user.bio, 'store' : {}});
+
+				}
+				else if (!post || post.length == 0){
+					res.json({"message": "success", 'user' : 'User: ' + user.name + ', ID: ' + user.id + ', Email: ' + user.email + ', Bio: ' + user.bio, 'store' : {}});
+		
+				} else {
+					res.type('html').status(400);
+					for(let i = 0; i < post.length; i++) {
+						allRecords.push({
+							'price' : post[i].price,
+							'desc' : post[i].desc,
+							'status?' : post[i].status,
+						});
+				}
+				res.type('html').status(200);
+				res.json( {"message" :"success",
+					'user' : 'User: ' + user.name + ', ID: ' + user.id + ', Email: ' + user.email + ', Bio: ' + user.bio,
+					'store': allRecords
+							
+				});
+			}
+			});		
 		}
 	});
 });

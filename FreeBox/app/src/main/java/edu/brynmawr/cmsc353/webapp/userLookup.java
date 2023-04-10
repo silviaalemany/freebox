@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class userLookup extends AppCompatActivity {
     EditText inputUserName;
 
-
+    String finalDisplay;
     protected String message;
 
     protected void onCreate(Bundle savedInstance){
@@ -60,7 +61,22 @@ public class userLookup extends AppCompatActivity {
                             // need to set the instance variable in the Activity object
                             // because we cannot directly access the TextView from here
                             message = jo.getString("message");
+                            if (!message.equals("success")) {
+                                finalDisplay = message;
+                            } else {
+                                StringBuilder sb = new StringBuilder();
+                                sb.append(jo.getString("user") + "\n");
+                                JSONArray posts = jo.getJSONArray("store");
+                                for (int i = 0; i <= posts.length(); i++){
+                                    String price = ((JSONObject) posts.get(i)).getString("price");
+                                    String desc = ((JSONObject) posts.get(i)).getString("desc");
+                                    String status = ((JSONObject) posts.get(i)).getString("status");
+                                    sb.append(String.format("Price: %s, Description: %s, Available %s\n",
+                                            price, desc, status));
+                                }
+                                finalDisplay = sb.toString();
 
+                            }
                         }
                         catch (Exception e) {
                             e.printStackTrace();
@@ -75,9 +91,8 @@ public class userLookup extends AppCompatActivity {
             executor.awaitTermination(2, TimeUnit.SECONDS);
 
             // now we can set the status in the TextView
-            tv.setText(message);
-        }
-        catch (Exception e) {
+            tv.setText(finalDisplay);
+        } catch (Exception e) {
             // uh oh
             e.printStackTrace();
             tv.setText(e.toString());

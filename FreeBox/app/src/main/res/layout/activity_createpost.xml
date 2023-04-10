@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".createPost">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,37 +17,46 @@
             android:layout_height="wrap_content"
             android:textSize="30dp"
             android:gravity="center"
-            android:text="Welcome to the FreeBox App!" />
+            android:text="Create a Post" />
 
+        <EditText
+            android:id="@+id/inputUserName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="User Name" />
+
+        <EditText
+            android:id="@+id/inputPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Price" />
+
+        <EditText
+            android:id="@+id/inputDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Description" />
 
         <Button
             android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add New User"
-            android:gravity="center"
-            android:onClick="onAddNewUserButtonClick"/>
-        <Button
-            android:id="@+id/button2"
+            android:text="Submit"
+            android:onClick="onConnectUserButtonClick"/>
+        <TextView
+            android:id="@+id/output"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Edit Existing User"
+            android:textSize="30dp"
             android:gravity="center"
-            android:onClick="onEditUserButtonClick"/>
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="User Lookup"
-            android:gravity="center"
-            android:onClick="onUserLookupButtonClick"/>
-        <Button
-            android:id="@+id/button4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Create Post"
-            android:gravity="center"
-            android:onClick="onCreatePostButtonClick"/>
+            android:text="Output" />
+
 
     </LinearLayout>
 

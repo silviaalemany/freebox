@@ -43,4 +43,22 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(i, COUNTER_ACTIVITY_ID);
 
     }
+
+    public void onCreatePostButtonClick(View v){
+        Intent i = new Intent(this, createPost.class);
+
+        i.putExtra("MESSAGE", "Hey,buddy!");
+
+        startActivityForResult(i, COUNTER_ACTIVITY_ID);
+
+    }
+
+    public void onUserLookupButtonClick(View v){
+        Intent i = new Intent(this, userLookup.class);
+
+        i.putExtra("MESSAGE", "Hey,buddy!");
+
+        startActivityForResult(i, COUNTER_ACTIVITY_ID);
+
+    }
 }

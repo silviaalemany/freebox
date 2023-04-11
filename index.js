@@ -9,6 +9,7 @@ var mongoose = require('mongoose');
 var Post = require('./Post.js');
 // import the User class from User.js
 var User = require('./User.js');
+const { json } = require('body-parser');
 
 /***************************************/
 
@@ -315,6 +316,7 @@ app.use('/singleUserApp', (req, res) => {
 					res.type('html').status(400);
 					for(let i = 0; i < post.length; i++) {
 						allRecords.push({
+							'id' : post[i].id,
 							'price' : post[i].price,
 							'desc' : post[i].desc,
 							'status' : post[i].status,
@@ -346,6 +348,42 @@ app.use('/edit', (req, res) => {
 	jsonObj[property] = newValue
 	// if user wants to replace required field with nothing, don't let them!
 	if (!req.body.newValue && !(property == 'desc')) {
+		res.json({'status': 'Cannot delete a required field.'});
+		return;
+	}
+	var action = { '$set' : jsonObj };
+
+	Post.findOneAndUpdate( filter, action, (err, orig) => {
+		if (err) {
+		    res.type('html').status(400);
+		    console.log('uh oh' + err);
+			res.json({'status': 'error'});
+		    res.write(err);
+		} else if (!orig) {
+			res.json({'status': 'No post matched that data.'});
+		} else {
+			res.json({'status': 'Success! Post updated.'});
+		}
+	})
+});
+
+// endpoint to edit a post on the app
+app.use('/editPostApp', (req, res) => {
+	if (!req.query.id || !req.query.property) {
+		res.json({'status': 'Missing data. Please provide post ID, property to edit, and new value.'});
+		return;
+	} 
+	var property = req.query.property;
+	var filter = { '_id' : req.query.id };
+	var newValue = req.query.newValue;
+	var jsonObj = {};
+	jsonObj[property] = newValue
+	console.log("JSONObj:");
+	console.log(jsonObj)
+	console.log("Filter:")
+	console.log(filter)
+	// if user wants to replace required field with nothing, don't let them!
+	if (!req.query.newValue && !(property == 'desc')) {
 		res.json({'status': 'Cannot delete a required field.'});
 		return;
 	}

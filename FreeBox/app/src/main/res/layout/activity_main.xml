@@ -38,7 +38,7 @@
             android:id="@+id/button3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="User Lookup"
+            android:text="User Lookup and Item Purchase"
             android:gravity="center"
             android:onClick="onUserLookupButtonClick"/>
         <Button
@@ -48,6 +48,13 @@
             android:text="Create Post"
             android:gravity="center"
             android:onClick="onCreatePostButtonClick"/>
+        <Button
+            android:id="@+id/button5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View All Posts"
+            android:gravity="center"
+            android:onClick="onViewAllPostsButtonClick"/>
 
     </LinearLayout>
 

@@ -43,13 +43,18 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
                 <TextView
-                    android:id="@+id/output"
+                    android:id="@+id/userOutput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="30dp"
                     android:gravity="center"
                     android:text="Output" />
-
+                <LinearLayout
+                    android:id="@+id/postLayouts"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                </LinearLayout>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

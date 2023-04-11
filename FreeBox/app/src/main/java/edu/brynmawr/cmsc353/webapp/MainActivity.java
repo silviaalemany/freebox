@@ -19,7 +19,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
-    public static final int COUNTER_ACTIVITY_ID = 1;
+    public static final int ADD_USER_ACTIVITY_ID = 1;
+    public static final int EDIT_USER_ACTIVITY_ID = 2;
+    public static final int CREATE_POST_ACTIVITY_ID = 3;
+    public static final int USER_LOOKUP_ACTIVITY_ID = 4;
+    public static final int ALL_POSTS_ACTIVITY_ID = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,36 +33,29 @@ public class MainActivity extends AppCompatActivity {
 
     public void onAddNewUserButtonClick(View v){
         Intent i = new Intent(this, addUser.class);
-
-        i.putExtra("MESSAGE", "Hey,buddy!");
-
-        startActivityForResult(i, COUNTER_ACTIVITY_ID);
+        startActivityForResult(i, ADD_USER_ACTIVITY_ID);
     }
 
     public void onEditUserButtonClick(View v){
         Intent i = new Intent(this, editUser.class);
-
-        i.putExtra("MESSAGE", "Hey,buddy!");
-
-        startActivityForResult(i, COUNTER_ACTIVITY_ID);
+        startActivityForResult(i, EDIT_USER_ACTIVITY_ID);
 
     }
 
     public void onCreatePostButtonClick(View v){
         Intent i = new Intent(this, createPost.class);
-
-        i.putExtra("MESSAGE", "Hey,buddy!");
-
-        startActivityForResult(i, COUNTER_ACTIVITY_ID);
+        startActivityForResult(i, CREATE_POST_ACTIVITY_ID);
 
     }
 
     public void onUserLookupButtonClick(View v){
         Intent i = new Intent(this, userLookup.class);
+        startActivityForResult(i, USER_LOOKUP_ACTIVITY_ID);
 
-        i.putExtra("MESSAGE", "Hey,buddy!");
+    }
 
-        startActivityForResult(i, COUNTER_ACTIVITY_ID);
-
+    public void onViewAllPostsButtonClick(View v) {
+        Intent i = new Intent(this, ViewAllPosts.class);
+        startActivityForResult(i, ALL_POSTS_ACTIVITY_ID);
     }
 }

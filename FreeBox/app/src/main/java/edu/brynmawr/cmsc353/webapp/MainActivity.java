@@ -25,6 +25,10 @@ public class MainActivity extends AppCompatActivity {
     public static final int USER_LOOKUP_ACTIVITY_ID = 4;
     public static final int ALL_POSTS_ACTIVITY_ID = 5;
 
+    public static final int EDIT_DESC_POST_ACTIVITY_ID = 6;
+
+    public static final int REMOVE_POST_ACTIVITY_ID = 7;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,12 +54,22 @@ public class MainActivity extends AppCompatActivity {
 
     public void onUserLookupButtonClick(View v){
         Intent i = new Intent(this, userLookup.class);
-        startActivityForResult(i, USER_LOOKUP_ACTIVITY_ID);
+        startActivityForResult(i, REMOVE_POST_ACTIVITY_ID);
 
     }
 
     public void onViewAllPostsButtonClick(View v) {
         Intent i = new Intent(this, ViewAllPosts.class);
         startActivityForResult(i, ALL_POSTS_ACTIVITY_ID);
+    }
+
+    public void onEditPostClick(View v) {
+        Intent i = new Intent(this, editPost.class);
+        startActivityForResult(i, EDIT_DESC_POST_ACTIVITY_ID);
+    }
+
+    public void onRemovePostClick(View v) {
+        Intent i = new Intent(this, removePost.class);
+        startActivityForResult(i, EDIT_DESC_POST_ACTIVITY_ID);
     }
 }

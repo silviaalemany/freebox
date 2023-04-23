@@ -367,73 +367,8 @@ app.use('/edit', (req, res) => {
 	})
 });
 
-// endpoint to edit a post on the app
-app.use('/editPostApp', (req, res) => {
-	if (!req.query.id || !req.query.property) {
-		res.json({'status': 'Missing data. Please provide post ID, property to edit, and new value.'});
-		return;
-	} 
-	var property = req.query.property;
-	var filter = { '_id' : req.query.id };
-	var newValue = req.query.newValue;
-	var jsonObj = {};
-	jsonObj[property] = newValue
-	console.log("JSONObj:");
-	console.log(jsonObj)
-	console.log("Filter:")
-	console.log(filter)
-	// if user wants to replace required field with nothing, don't let them!
-	if (!req.query.newValue && !(property == 'desc')) {
-		res.json({'status': 'Cannot delete a required field.'});
-		return;
-	}
-	var action = { '$set' : jsonObj };
 
-	Post.findOneAndUpdate( filter, action, (err, orig) => {
-		if (err) {
-		    res.type('html').status(400);
-		    console.log('uh oh' + err);
-			res.json({'status': 'error'});
-		    res.write(err);
-		} else if (!orig) {
-			res.json({'status': 'No post matched that data.'});
-		} else {
-			res.json({'status': 'Success! Post updated.'});
-		}
-	})
-});
 
-// endpoint to edit a user on the app 
-app.use('/editUserApp', (req, res) => {
-	if (!req.query.id || !req.query.property) {
-		res.json({'status': 'Missing data. Please provide user, property to edit, and new value.'});
-		return;
-	} 
-	var property = req.query.property;
-	var filter = { 'id' : req.query.id };
-	var newValue = req.query.newValue;
-	var jsonObj = {};
-	jsonObj[property] = newValue
-	// if user wants to replace required field with nothing, don't let them!
-	if (!req.query.newValue) {
-		res.json({'status': 'Cannot delete a required field.'});
-		return;
-	}
-	var action = { '$set' : jsonObj };
-
-	User.findOneAndUpdate( filter, action, (err, orig) => {
-		if (err) {
-		    res.type('html').status(400);
-		    console.log('uh oh' + err);
-			res.json({'status': 'error'});
-		    res.write(err);
-		} else if (!orig) {
-			res.json({'status': 'No post matched that data.'});
-		} else {
-			res.json({'status': 'Success! Post updated.'});
-		}
-	})
-});
 //endpoint for viewing a post 
 // view post by post id 
 app.use('/viewPost', (req, res) => {
@@ -472,24 +407,25 @@ app.use('/viewPost', (req, res) => {
 	});
 });
 
-//endpoint for updating tags 
-/** 
-app.use('/addTag', (req, res) => {
-	console.log(req.body.ID);
-	console.log(req.body.source);
+// endpoint to edit description of a post on the app 
+app.use('/editPostDescApp', (req, res) => {
+	console.log(req.query.id);
+	console.log(req.query.desc);
 
-	if (!req.body.ID || !req.body.source) {
-		res.json({'status': 'Missing data.'});
+	if (!req.query.id) {
+	
+		res.json({'status': 'Missing data. Please provide post id and a new value'});
+		return;
+	} 
+
+	var filter = { 'id' : req.query.id };
+	var action = { '$set' : {'desc' : req.query.desc}};
+	// if user wants to replace required field with nothing, don't let them!
+	if (!req.query.desc) {
+		res.json({'status': 'Cannot delete a required field.'});
 		return;
 	}
-
-	var filter = { 'id' : req.body.ID };
-	var tags = req.body.source;
-
-	var jsonObj = {};
-	jsonObj['tags'] = tags
-	var action = { '$set' : jsonObj };
-
+	
 	Post.findOneAndUpdate( filter, action, (err, orig) => {
 		if (err) {
 		    res.type('html').status(400);
@@ -502,13 +438,9 @@ app.use('/addTag', (req, res) => {
 			res.json({'status': 'Success! Post updated.'});
 		}
 	})
+});
 
-
-
-
-
-}); */
-
+//endpoint for deleting a post 
 app.use('/deletePost', (req, res) => {
 	console.log(req.body.posts);
 	
@@ -519,6 +451,35 @@ app.use('/deletePost', (req, res) => {
 	}
 
 	var filter = { 'id' : req.body.posts };
+	
+
+	Post.findOneAndDelete(filter,(err,post) => {
+		if(err){
+			res.type('html').status(400);
+		    console.log('uh oh' + err);
+			res.json({'status': 'error'});
+		    res.write(err);
+		}
+		else if(!post){
+			res.json({'status': 'No post matched that data.'});
+		} 
+		else {
+			res.json({'status': 'Success! Post deleted.'});
+		}
+
+	});
+
+}); 
+
+//endpoint for deleting a post on the app
+app.use('/deletePostApp', (req, res) => {
+	
+	if (!req.query.id) {
+		res.json({'status': 'Missing data.'});
+		return;
+	}
+
+	var filter = { 'id' : req.query.id};
 	
 
 	Post.findOneAndDelete(filter,(err,post) => {

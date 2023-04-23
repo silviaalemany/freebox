@@ -22,6 +22,8 @@
         <button onclick="viewPost()">View Post</button>
         <p></p>
         <button onclick="deletePost()">Delete Post</button>
+        <p></p>
+        <button onclick="deleteUser()">Delete User</button>
 
         <script>
             function addUser() {
@@ -54,10 +56,11 @@
             function viewPost() {
                 window.location.href = "/public/postSearch.html";
             }
-
-
             function deletePost() {
                 window.location.href = "/public/deletePost.html";
+            }
+            function deleteUser() {
+                window.location.href = "/public/deleteUser.html";
             }
         </script>
     </body>

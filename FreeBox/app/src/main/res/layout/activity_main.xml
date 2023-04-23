@@ -56,6 +56,22 @@
             android:gravity="center"
             android:onClick="onViewAllPostsButtonClick"/>
 
+        <Button
+            android:id="@+id/button6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Edit Description of Existing Post"
+            android:gravity="center"
+            android:onClick="onEditPostClick"/>
+
+        <Button
+            android:id="@+id/button7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Remove Existing Post"
+            android:gravity="center"
+            android:onClick="onRemovePostClick"/>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

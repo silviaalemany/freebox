@@ -500,6 +500,39 @@ app.use('/deletePostApp', (req, res) => {
 
 }); 
 
+
+//endpoint for deleting a user on the web
+app.use('/deleteUser', (req, res) => {
+
+	var user = req.body.user
+	
+	if (!user) {
+		res.json({'status': 'Missing data.'});
+		return;
+	}
+
+	var filter = { 'id' : user};
+	console.log(filter);
+	
+	User.findOneAndDelete(filter, (err, origUser) => {
+		if (err) {
+			res.type('html').status(400);
+		    console.log('uh oh' + err);
+			res.json({'status': 'error'});
+		    res.write(err);
+		}
+		else if (!origUser) {
+			res.json({'status': 'No user matched that data.'});
+		} 
+		else {
+			res.json({'status': 'Success! User ' + user + ' was deleted.'});
+		}
+
+	});
+
+}); 
+
+
 app.use('/test', (req, res) => {
 	var data = {'message' : 'It works!'};
 	res.json(data);

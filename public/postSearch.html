@@ -5,13 +5,18 @@
     </head>
 
     <body>
-        <form action="/viewPost" method="post">
+        <button onclick="searchByID()">Search by ID</button>
+        <p></p>
+        <button onclick="searchByUser()">Search by User</button>
 
-            Post ID: <input type="text" name="posts">
-              
-            <input type="submit" value="Search">
-            
-        </form>
+        <script>
+            function searchByID() {
+                window.location.href = "/public/postSearchByID.html";
+            }
+            function searchByUser() {
+                window.location.href = "/public/postSearchByUser.html";
+            }
+        </script>
             
     </body>
 

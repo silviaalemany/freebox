@@ -531,6 +531,36 @@ app.use('/deletePostApp', (req, res) => {
 
 }); 
 
+app.use('/editUserApp', (req, res) => {
+	if (!req.query.id || !req.query.property) {
+		res.json({'status': 'Missing data. Please provide user, property to edit, and new value.'});
+		return;
+	} 
+	var property = req.query.property;
+	var filter = { 'id' : req.query.id };
+	var newValue = req.query.newValue;
+	var jsonObj = {};
+	jsonObj[property] = newValue
+	// if user wants to replace required field with nothing, don't let them!
+	if (!req.query.newValue) {
+		res.json({'status': 'Cannot delete a required field.'});
+		return;
+	}
+	var action = { '$set' : jsonObj };
+
+	User.findOneAndUpdate( filter, action, (err, orig) => {
+		if (err) {
+		    res.type('html').status(400);
+		    console.log('uh oh' + err);
+			res.json({'status': 'error'});
+		    res.write(err);
+		} else if (!orig) {
+			res.json({'status': 'No post matched that data.'});
+		} else {
+			res.json({'status': 'Success! Post updated.'});
+		}
+	})
+});
 
 //endpoint for deleting a user on the web
 app.use('/deleteUser', (req, res) => {

@@ -48,10 +48,7 @@ public class makePurchase extends AppCompatActivity {
             ExecutorService executor = Executors.newSingleThreadExecutor();
             executor.execute(() -> {
                 try {
-                    // assumes that there is a server running on the AVD's host on port 3000
-                    // and that it has a /test endpoint that returns a JSON object with
-                    // a field called "message"
-                    URL url = new URL("http://10.0.2.2:3000/editPostApp?id=" + postID.trim() + "&property=status&newValue=false");
+                    URL url = new URL("http://10.0.2.2:3000/editPostStatusApp?id=" + postID.trim() + "&status=false");
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("GET");
                     conn.connect();

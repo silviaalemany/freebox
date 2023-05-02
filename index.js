@@ -441,6 +441,33 @@ app.use('/viewPostByUser', (req, res) => {
 	});
 });
 
+// endpoint to edit description of a post on the app.
+// used to update post status after purchasing an item -- do not delete!
+app.use('/editPostStatusApp', (req, res) => {
+	console.log(req.query.id);
+
+	if (!req.query.id) {
+		res.json({'status': 'Missing data. Please provide post id and a new value'});
+		return;
+	} 
+
+	var filter = { '_id' : req.query.id };
+	var action = { '$set' : {'status' : req.query.status}};
+	
+	Post.findOneAndUpdate( filter, action, (err, orig) => {
+		if (err) {
+		    res.type('html').status(400);
+		    console.log('uh oh' + err);
+			res.json({'status': 'error'});
+		    res.write(err);
+		} else if (!orig) {
+			res.json({'status': 'No post matched that data.'});
+		} else {
+			res.json({'status': 'Success! Post updated.'});
+		}
+	})
+});
+
 
 // endpoint to edit description of a post on the app 
 app.use('/editPostDescApp', (req, res) => {

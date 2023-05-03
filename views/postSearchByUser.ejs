@@ -1,0 +1,43 @@
+<html>
+    <head>
+        <title>Freebox: Search Posts by User</title>
+        <link rel="stylesheet" type="text/css" href="styles.css" />
+    </head>
+
+    <body>
+        <form action="/">
+            <input type="submit" value="Home">
+        </form>
+        <form action="/postSearch">
+            <input type="submit" value="Back">
+        </form>
+        <form action="/postSearchByUser" method="post">
+
+            Username: <input type="text" name="user">
+              
+            <input type="submit" value="Search">
+            
+        </form>
+        <div><%= searchResult %></div>
+        <table>
+            <% for(const obj of data){ %>
+             <tr>
+              <% for(const key in obj) { %>
+               <th><%= key %></th>
+              <% } %>
+             </tr>
+             <tr>
+             <% for(const key in obj) { %>
+              <td><%= obj[key] %></td>
+             <% } %>
+             </tr>
+            <% } %> 
+        </table>
+            
+    </body>
+
+</html>
+            
+    </body>
+
+</html>

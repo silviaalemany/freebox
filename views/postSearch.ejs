@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <title>Freebox: Search Posts</title>
+        <link rel="stylesheet" type="text/css" href="styles.css" />
+    </head>
+
+    <body>
+        <form action="/">
+            <input type="submit" value="Home">
+        </form>
+        <button onclick="searchByID()">Search by ID</button>
+        <p></p>
+        <button onclick="searchByUser()">Search for User Storefront</button>
+
+        <script>
+            function searchByID() {
+                window.location.href = "/postSearchByID";
+            }
+            function searchByUser() {
+                window.location.href = "/postSearchByUser";
+            }
+        </script>
+            
+    </body>
+
+</html>

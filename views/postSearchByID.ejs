@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <title>Freebox: Search Posts by ID</title>
+        <link rel="stylesheet" type="text/css" href="styles.css" />
+    </head>
+
+    <body>
+        <form action="/">
+            <input type="submit" value="Home">
+        </form>
+        <form action="/postSearch">
+            <input type="submit" value="Back">
+        </form>
+        <form action="/postSearchByID" method="post">
+
+            Post ID: <input type="text" name="_id">
+              
+            <input type="submit" value="Search">
+            
+        </form>
+        <div><%= searchResult %></div>
+        <table>
+            <% for(const key in data){ %>     
+               <th><%= key %></th>
+             <% } %> 
+            <tr>
+             <% for(const key in data) { %>
+              <td><%= data[key] %></td>
+             <% } %>
+            </tr>
+
+        </table>
+    </body>
+
+</html>

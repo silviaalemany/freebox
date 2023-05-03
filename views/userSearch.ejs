@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Search for a User</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <form action="/">
+      <input type="submit" value="Home">
+    </form>
+    <form action="/userSearch" method="post">
+
+      Username: <input type="text" name="user">
+        
+      <input type="submit" value="Search">
+      
+    </form>
+    <div><%= searchResult %></div>
+    <table>
+        <% for(const key in data){ %>     
+           <th><%= key %></th>
+         <% } %> 
+        <tr>
+         <% for(const key in data) { %>
+          <td><%= data[key] %></td>
+         <% } %>
+        </tr>
+
+    </table>
+
+  </body>
+  
+</html>

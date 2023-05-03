@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <title>Freebox: See All Users</title>
+        <link rel="stylesheet" type="text/css" href="styles.css" />
+    </head>
+
+    <body>
+        <form action="/">
+            <input type="submit" value="Home">
+        </form>
+        <table>
+            <% for(const obj of data){ %>
+             <tr>
+              <% for(const key in obj) { %>
+               <th><%= key %></th>
+              <% } %>
+             </tr>
+             <tr>
+             <% for(const key in obj) { %>
+              <td><%= obj[key] %></td>
+             <% } %>
+             </tr>
+            <% } %> 
+        </table>
+            
+    </body>
+
+</html>

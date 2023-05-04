@@ -1,5 +1,6 @@
 package edu.brynmawr.cmsc353.webapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.LinearLayout;
@@ -21,10 +22,13 @@ public class ViewAllPosts extends AppCompatActivity {
     protected String message;
     protected String headerDisplay;
     protected String[] postDisplay;
-
+    protected String user;
+    protected String name;
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.activity_allposts);
+        name = getIntent().getStringExtra("name");
+        user = getIntent().getStringExtra("user");
         updateUI();
     }
 

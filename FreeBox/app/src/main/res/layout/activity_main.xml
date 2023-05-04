@@ -19,58 +19,20 @@
             android:gravity="center"
             android:text="Welcome to the FreeBox App!" />
 
-
+        <Button
+            android:id="@+id/button8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:gravity="center"
+            android:onClick="onLoginClick"/>
         <Button
             android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add New User"
+            android:text="New Account"
             android:gravity="center"
             android:onClick="onAddNewUserButtonClick"/>
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Edit Existing User"
-            android:gravity="center"
-            android:onClick="onEditUserButtonClick"/>
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="User Lookup and Item Purchase"
-            android:gravity="center"
-            android:onClick="onUserLookupButtonClick"/>
-        <Button
-            android:id="@+id/button4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Create Post"
-            android:gravity="center"
-            android:onClick="onCreatePostButtonClick"/>
-        <Button
-            android:id="@+id/button5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="View All Posts"
-            android:gravity="center"
-            android:onClick="onViewAllPostsButtonClick"/>
-
-        <Button
-            android:id="@+id/button6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Edit Description of Existing Post"
-            android:gravity="center"
-            android:onClick="onEditPostClick"/>
-
-        <Button
-            android:id="@+id/button7"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Remove Existing Post"
-            android:gravity="center"
-            android:onClick="onRemovePostClick"/>
 
     </LinearLayout>
 

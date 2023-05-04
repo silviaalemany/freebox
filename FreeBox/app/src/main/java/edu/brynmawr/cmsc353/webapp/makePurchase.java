@@ -1,5 +1,6 @@
 package edu.brynmawr.cmsc353.webapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -20,9 +21,12 @@ import java.util.concurrent.TimeUnit;
 
 public class makePurchase extends AppCompatActivity {
     String status;
-
+    protected String name;
+    protected String user;
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
+        name = getIntent().getStringExtra("name");
+        user = getIntent().getStringExtra("user");
         setContentView(R.layout.activity_makepurchase);
         String postInfo = getIntent().getStringExtra("postInfo");
         String status = changePostStatus(postInfo);
@@ -79,5 +83,4 @@ public class makePurchase extends AppCompatActivity {
         }
         return status;
     }
-
 }

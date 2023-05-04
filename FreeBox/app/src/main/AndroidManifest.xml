@@ -4,7 +4,7 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="FreeBox"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
@@ -24,6 +24,8 @@
         <activity android:name=".ViewAllPosts"/>
         <activity android:name=".editPost"/>
         <activity android:name=".removePost"/>
+        <activity android:name=".login"/>
+        <activity android:name=".loggedInMainActivity"/>
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

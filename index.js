@@ -137,7 +137,7 @@ app.get('/createUser', (req, res) => {
 	res.render('userForm', { userResult });
 });
 app.post('/createUser', async function(req, res) {
-	if (req.body.name && req.body.id && req.body.email) {
+	if (req.body.name && req.body.id && req.body.email && req.body.password) {
 		var userResult = ` `
 		filter = {"id" : req.body.id};
 		let usr = await User.findOne(filter).catch(function (err) {
@@ -153,9 +153,10 @@ app.post('/createUser', async function(req, res) {
 				var newUser = new User ({
 					name: req.body.name,
 					id: req.body.id,
+					password: req.body.password,
 					email: req.body.email,
 					bio: req.body.bio
-					});
+				});
 				
 			} catch (error) {
 				postResult = `There was an issue creating the user. Try again?`;
@@ -238,9 +239,9 @@ app.get('/allUsers',  async function (req, res) {
 			data.push({
 				"Name" : users[i].name,
 				"Username" : users[i].id,
+				"Password" : users[i].password,
 				"Email (@brynmawr.edu)" : users[i].email, 
 				"Bio" : users[i].bio,
-
 			})
 		}
 	}
@@ -364,41 +365,51 @@ app.get('/editPost', (req, res) => {
 // endpoint for creating a new post for the app
 // this is the action of "postform.html"
 app.use('/createPostApp', (req, res) => {
-	if (!req.query.user || isNaN(req.query.price)) {
-		res.json({'message' : 'Missing data. Please provide username of post creator and price.'});
-	}
-	filter = {"id" : req.query.user};
-	User.find(filter, (err, usr) => {
-		if (err) {
-		    console.log(err);
-		    res.json({"message" : 'Could not find user.'});
-			return;
-		}
-		else if (!usr || usr.length == 0){
-			res.json({"message": 'User does not exist.'});
-			return;
-		}
-	})
-	
-	// construct the Post from the form data which is in the request body
-	var newPost = new Post ({
-		_id: mongoose.Types.ObjectId().toHexString(),
-		user: req.query.user,
-		price: req.query.price,
-		desc: req.query.desc,
-		status: true,
-	});
+	var regex = /^[1-9]\d*(((,\d{3}){1})?(\.\d{0,2})?)$/;
+	if (!req.query.user || !req.query.price) {
+		res.json({"success" : false, "status" : 'Missing required data.'});
+		res.end();
+	} else if (!regex.test(req.query.price)) {
+		res.json({"success" : false, "status" : 'Price should be a non-negative numeric value in USD format.'});
+		res.end();
+	} else {
 
-	newPost.save( (err) => { 
-		if (err) {
-			console.log(err);
-		    res.json({'message' : 'Issue saving post.'});
-			return;
-		}
-		else {
-		    res.json({'message' : 'Successfully added ' + newPost.user + '\'s post to the database.'});
-		}
-	}); 
+		filter = {"id" : req.query.user};
+		User.findOne(filter, (err, usr) => {
+			if (err) {
+				console.log(err);
+				res.json({"success" : false, "status" : 'Could not find user.'});
+				res.end();
+			}
+			else if (!usr){
+				res.json({"success" : false, "status": 'User does not exist.'});
+				res.end();
+			}
+		})
+		 
+		// construct the Post from the form data which is in the request body
+		var newPost = new Post ({
+			_id: mongoose.Types.ObjectId().toHexString(),
+			user: req.query.user,
+			price: req.query.price,
+			desc: req.query.desc,
+			status: true,
+		});
+	
+		newPost.save( (err) => { 
+			if (err) {
+				console.log(err);
+				res.json({"success" : true, 'status' : 'Issue saving post.'});
+				res.end();
+			}
+			else {
+				res.json({"success" : true});
+				res.end();
+			}
+		}); 
+	}
+	
+
 });
 
 // endpoint to edit description of a post on the app.
@@ -431,46 +442,43 @@ app.use('/editPostStatusApp', (req, res) => {
 
 // endpoint to edit description of a post on the app 
 app.use('/editPostDescApp', (req, res) => {
-	console.log(req.query.id);
-	console.log(req.query.desc);
-
-	if (!req.query.id) {
+	if (!req.query.id || !req.query.user) {
 	
 		res.json({'status': 'Missing data. Please provide post id and a new value'});
-		return;
-	} 
-
-	var filter = { 'id' : req.query.id };
-	var action = { '$set' : {'desc' : req.query.desc}};
-	// if user wants to replace required field with nothing, don't let them!
-	if (!req.query.desc) {
-		res.json({'status': 'Cannot delete a required field.'});
-		return;
-	}
-	
-	Post.findOneAndUpdate( filter, action, (err, orig) => {
-		if (err) {
-		    res.type('html').status(400);
-		    console.log('uh oh' + err);
-			res.json({'status': 'error'});
-		    res.write(err);
-		} else if (!orig) {
-			res.json({'status': 'No post matched that data.'});
-		} else {
-			res.json({'status': 'Success! Post updated.'});
+		res.end();
+	} else {
+		var filter = { 'id' : req.query.id , 'user' : req.query.user};
+		var action = { '$set' : {'desc' : req.query.desc}};
+		// if user wants to replace required field with nothing, don't let them!
+		if (!req.query.desc) {
+			res.json({'status': 'Cannot delete the description field.'});
+			return;
 		}
-	})
+		
+		Post.findOneAndUpdate( filter, action, (err, orig) => {
+			if (err) {
+				res.type('html').status(400);
+				console.log('uh oh' + err);
+				res.json({'status': 'There was an issue finding the post you want to edit. Try again?'});
+				res.write(err);
+			} else if (!orig) {
+				res.json({'status': 'None of your posts matched that data.'});
+			} else {
+				res.json({'status': 'Success! Post updated.'});
+			}
+		})
+	}
 });
 
 //endpoint for deleting a post on the app
 app.use('/deletePostApp', (req, res) => {
 	
-	if (!req.query.id) {
+	if (!req.query.id || !req.query.user) {
 		res.json({'status': 'Missing data.'});
 		return;
 	}
 
-	var filter = { 'id' : req.query.id};
+	var filter = { '_id' : req.query.id, 'user' : req.query.user};
 	
 
 	Post.findOneAndDelete(filter,(err,post) => {
@@ -481,7 +489,7 @@ app.use('/deletePostApp', (req, res) => {
 		    res.write(err);
 		}
 		else if(!post){
-			res.json({'status': 'No post matched that data.'});
+			res.json({'status': 'None of your posts matched that data.'});
 		} 
 		else {
 			res.json({'status': 'Success! Post deleted.'});
@@ -492,8 +500,8 @@ app.use('/deletePostApp', (req, res) => {
 }); 
 
 app.use('/editUserApp', (req, res) => {
-	if (!req.query.id || !req.query.property) {
-		res.json({'status': 'Missing data. Please provide user, property to edit, and new value.'});
+	if (!req.query.id && !req.query.property) {
+		res.json({'success' : false, 'status': 'Missing data. Try again?'});
 		return;
 	} 
 	var property = req.query.property;
@@ -502,8 +510,8 @@ app.use('/editUserApp', (req, res) => {
 	var jsonObj = {};
 	jsonObj[property] = newValue
 	// if user wants to replace required field with nothing, don't let them!
-	if (!req.query.newValue) {
-		res.json({'status': 'Cannot delete a required field.'});
+	if (!req.query.newValue && req.query.property != "bio") {
+		res.json({'success' : false, 'status': 'Cannot replace a required field with nothing.'});
 		return;
 	}
 	var action = { '$set' : jsonObj };
@@ -512,15 +520,16 @@ app.use('/editUserApp', (req, res) => {
 		if (err) {
 		    res.type('html').status(400);
 		    console.log('uh oh' + err);
-			res.json({'status': 'error'});
+			res.json({'success' : false, 'status': 'There was an issue editing your account info. Try again?'});
 		    res.write(err);
 		} else if (!orig) {
-			res.json({'status': 'No post matched that data.'});
+			res.json({'success' : false, 'status': 'No post matched that data.'});
 		} else {
-			res.json({'status': 'Success! Post updated.'});
+			res.json({'success' : true, 'status': 'Success! Your account info was updated.'});
 		}
 	})
 });
+
 
 // endpoint for showing a single user
 app.use('/singleUserApp', (req, res) => {
@@ -588,34 +597,64 @@ app.use('/singleUserApp', (req, res) => {
 });
 
 app.use('/createUserApp', (req, res) => {
-	if (!req.query.name || !req.query.id || !req.query.email) {
-		res.json({'status': 'Missing data. Please provide name, username, and email.'});
+	if (!req.query.name || !req.query.id || !req.query.email || !req.query.password) {
+		res.json({'success' : false, 'status': 'Missing data. Please provide name, username, password, and email.'});
 		return;
 	}
 	// construct the Post from the form data which is in the request body
 	var newUser = new User ({
 		name: req.query.name,
 		id: req.query.id,
+		password: req.query.password,
 		email: req.query.email,
 		bio: req.query.bio
-		});
+	});
 
 	// save the person to the database
 	newUser.save( (err) => { 
 		if (err) {
 			res.type('html').status(200);
-			res.json({'status' : "hi"});
+			res.json({'success' : false, 'status' : 'There was an making your account. Try again?'});
 			console.log(err);
 			res.end();
 		}
 		else {
 			// display the "successfull created" message
-			res.send({'status' :'successfully added new user ' + newUser.name + ' to the database.'});
+			res.send({'success' : true, 'status' :'successfully added new user ' + newUser.name + ' to the database.'});
+			res.end();
 		}
 	}); 
 });
 
+app.use('/loginApp', (req, res) => {
+	if (!req.query.id || !req.query.password) {
+		res.json({'status': 'Missing data. Please username and password.'});
+		return;
+	}
+	const id = req.query.id;
+	const password = req.query.password
+	filter = {'id' : id, 'password' : password};
 
+	// save the person to the database
+	User.findOne( filter, (err, user) => { 
+		if (err) {
+			res.type('html').status(200);
+			res.json({'success' : false, 'status' : 'There was an issue logging in. Try again?'});
+			console.log(err);
+			res.end();
+		}
+		else {
+			if (user) {
+				res.send({'success' : true, 'name' : user.name});
+				res.end();
+			}
+			else {
+				res.json({'success' : false, 'status' : 'There was an issue logging in. Try again?'});
+				res.end();
+			}
+		}
+	}); 
+});
 /*************************************************/
 
 app.listen(3000,  () => {

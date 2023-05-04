@@ -8,19 +8,21 @@
         <form action="/">
             <input type="submit" value="Home">
         </form>
-        <table>
+        <table class="center">
             <% for(const obj of data){ %>
              <tr>
               <% for(const key in obj) { %>
-               <th><%= key %></th>
+               <th>
+                <%= key %>
+                </th>
               <% } %>
              </tr>
              <tr>
              <% for(const key in obj) { %>
-              <td><%= obj[key] %></td>
+              <td ><%= obj[key] %></td>
              <% } %>
              </tr>
-            <% } %> 
+            <% }%> 
         </table>
             
     </body>

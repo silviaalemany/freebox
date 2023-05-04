@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".editPost">
+    tools:context=".login">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,43 +12,33 @@
         android:orientation="vertical">
 
 
-        <TextView
-            android:id="@+id/statusField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:gravity="center"
-            android:text="Edit Description of Existing Post" />
 
         <EditText
-            android:id="@+id/inputPostID"
+            android:id="@+id/inputUserName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:hint="Post ID" />
+            android:hint="Username" />
 
         <EditText
-            android:id="@+id/inputEdit"
+            android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:hint="New Description" />
+            android:hint="Password"/>
+
 
         <Button
             android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Submit"
-            android:onClick="onConnectPostEditButtonClick"/>
-        <TextView
-            android:id="@+id/output"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:gravity="center"
-            android:text="Output" />
+            android:text="Login"
+            android:onClick="onConnectUserButtonClick"/>
+
+
+
 
     </LinearLayout>
 

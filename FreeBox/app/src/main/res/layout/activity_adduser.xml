@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Name" />
+            android:hint="Name" />
 
         <EditText
             android:id="@+id/inputUserName"
@@ -33,7 +33,15 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Username" />
+            android:hint="Username" />
+
+        <EditText
+            android:id="@+id/inputPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="Password" />
 
         <EditText
             android:id="@+id/inputEmail"
@@ -41,7 +49,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="BMC Email" />
+            android:hint="BMC Email" />
 
         <EditText
             android:id="@+id/inputBio"
@@ -49,7 +57,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Class Year" />
+            android:hint="Bio (optional)" />
 
         <Button
             android:id="@+id/button"
@@ -57,13 +65,6 @@
             android:layout_height="wrap_content"
             android:text="Submit"
             android:onClick="onConnectUserButtonClick"/>
-        <TextView
-            android:id="@+id/output"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:gravity="center"
-            android:text="Output" />
 
 
     </LinearLayout>

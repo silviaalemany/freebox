@@ -106,7 +106,7 @@ public class userLookup extends AppCompatActivity {
                         }
                         catch (Exception e) {
                             e.printStackTrace();
-                            userDisplay = e.toString();
+                            userDisplay = "There was an issue with searching for the user you specified. Try again?";
                         }
                     }
             );

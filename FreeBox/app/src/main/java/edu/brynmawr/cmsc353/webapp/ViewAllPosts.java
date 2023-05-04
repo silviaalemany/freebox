@@ -22,13 +22,9 @@ public class ViewAllPosts extends AppCompatActivity {
     protected String message;
     protected String headerDisplay;
     protected String[] postDisplay;
-    protected String user;
-    protected String name;
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setContentView(R.layout.activity_allposts);
-        name = getIntent().getStringExtra("name");
-        user = getIntent().getStringExtra("user");
         updateUI();
     }
 
@@ -86,7 +82,7 @@ public class ViewAllPosts extends AppCompatActivity {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    message = e.toString();
+                    message = "There was an issue retrieving all of the posts. Try again?";
                 }
             });
 
@@ -97,16 +93,25 @@ public class ViewAllPosts extends AppCompatActivity {
         } catch (Exception e) {
             // uh oh
             e.printStackTrace();
-            message = e.toString();
+            message = "There was an issue retrieving all of the posts. Try again?";
+        } finally {
+            try {
+                for (int i = 0; i < postDisplay.length; i++) {
+                    TextView post = new TextView(this);
+                    post.setText(postDisplay[i]);
+                    post.setTextSize(30);
+                    post.setGravity(Gravity.CENTER);
+                    postLayouts.addView(post);
+                }
+            } catch (Exception e) {
+                message = "There was an issue retrieving all of the posts. Try again?";
+                TextView post = new TextView(this);
+                post.setText(message);
+            }
+
         }
 
-        for (int i = 0; i < postDisplay.length; i++) {
-            TextView post = new TextView(this);
-            post.setText(postDisplay[i]);
-            post.setTextSize(30);
-            post.setGravity(Gravity.CENTER);
-            postLayouts.addView(post);
-        }
+
 
     }
 }

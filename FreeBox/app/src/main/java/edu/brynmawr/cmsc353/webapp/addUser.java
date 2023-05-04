@@ -2,6 +2,7 @@ package edu.brynmawr.cmsc353.webapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -24,9 +25,13 @@ public class addUser extends AppCompatActivity{
     EditText inputUserName;
     EditText inputEmail;
     EditText inputBio;
+    EditText inputPassword;
 
-    protected String message;
-
+    protected Toast toast;
+    int duration = Toast.LENGTH_SHORT;
+    protected CharSequence toastText;
+    boolean success = false;
+    public static final int LOGGED_IN_MAIN_ACTIVITY_ID = 1;
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
 
@@ -41,14 +46,14 @@ public class addUser extends AppCompatActivity{
         inputName = (EditText) findViewById(R.id.inputName);
         inputUserName = (EditText) findViewById(R.id.inputUserName);
         inputEmail = (EditText) findViewById(R.id.inputEmail);
-        inputBio = (EditText) findViewById(R.id.inputEmail);
-
-        TextView tv = findViewById(R.id.output);
+        inputBio = (EditText) findViewById(R.id.inputBio);
+        inputPassword = (EditText) findViewById(R.id.inputPassword);
 
         String name = inputName.getText().toString();
         String username = inputUserName.getText().toString();
         String email = inputEmail.getText().toString();
         String bio = inputBio.getText().toString();
+        String password = inputPassword.getText().toString();
 
         try {
             ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -59,7 +64,7 @@ public class addUser extends AppCompatActivity{
                             // a field called "message"
 
                             URL url = new URL("http://10.0.2.2:3000/createUserApp?name=" + name
-                            +"&id=" + username + "&email=" + email + "&bio=" + bio);
+                            + "&id=" + username + "&password=" + password + "&email=" + email + "&bio=" + bio);
 
 
 
@@ -72,17 +77,21 @@ public class addUser extends AppCompatActivity{
                             String response = in.nextLine();
 
                             JSONObject jo = new JSONObject(response);
+                            success = jo.getBoolean("success");
 
+
+
+                            if (success) {
+                                toastText = "Account creation successful!";
+                            } else {
+                                toastText = (CharSequence) jo.getString("status");
+                            }
                             Log.d("test",jo.toString());
 
-                            // need to set the instance variable in the Activity object
-                            // because we cannot directly access the TextView from here
-                            message = jo.toString();
 
                         }
                         catch (Exception e) {
-                            e.printStackTrace();
-                            message = e.toString();
+                            toastText = "There was an issue creating your new account.";
                         }
                     }
             );
@@ -92,13 +101,22 @@ public class addUser extends AppCompatActivity{
             // but it should be okay for our purposes (and is a lot easier)
             executor.awaitTermination(2, TimeUnit.SECONDS);
 
-            // now we can set the status in the TextView
-            tv.setText(message);
         }
         catch (Exception e) {
             // uh oh
             e.printStackTrace();
-            //tv.setText(e.toString());
+            toastText = e.toString();
+        } finally {
+            Context context = getApplicationContext();
+            toast = Toast.makeText(context, toastText, duration);
+            toast.show();
+            if (success) {
+                Intent i = new Intent(this, loggedInMainActivity.class);
+                i.putExtra("user", username);
+                i.putExtra("name", name);
+
+                startActivityForResult(i, LOGGED_IN_MAIN_ACTIVITY_ID);
+            }
         }
     }
 }

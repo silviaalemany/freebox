@@ -21,13 +21,15 @@ import java.util.concurrent.TimeUnit;
 
 public class removePost extends AppCompatActivity {
     EditText inputPostID;
-
+    protected String name;
+    protected String user;
     protected String message;
 
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
 
-        //inputName.getText()
+        name = getIntent().getStringExtra("name");
+        user = getIntent().getStringExtra("user");
 
         setContentView(R.layout.activity_deleteposts);
 
@@ -50,7 +52,7 @@ public class removePost extends AppCompatActivity {
                             // and that it has a /test endpoint that returns a JSON object with
                             // a field called "message"
 
-                            URL url = new URL("http://10.0.2.2:3000/deletePostApp?id=" + id);
+                            URL url = new URL("http://10.0.2.2:3000/deletePostApp?id=" + id +"&user=" + user);
 
                             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                             conn.setRequestMethod("GET");
@@ -63,12 +65,11 @@ public class removePost extends AppCompatActivity {
 
                             // need to set the instance variable in the Activity object
                             // because we cannot directly access the TextView from here
-                            message = jo.toString();
+                            message = jo.getString("status");
 
                         }
                         catch (Exception e) {
-                            e.printStackTrace();
-                            message = e.toString();
+                            message = "There was an issue with editing your post. Try again?";
                         }
                     }
             );
@@ -83,8 +84,7 @@ public class removePost extends AppCompatActivity {
         }
         catch (Exception e) {
             // uh oh
-            e.printStackTrace();
-            tv.setText(e.toString());
+            tv.setText("There was an issue with editing your post. Try again?");
         }
     }
 

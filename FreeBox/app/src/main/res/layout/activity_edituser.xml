@@ -17,45 +17,49 @@
             android:layout_height="wrap_content"
             android:textSize="30dp"
             android:gravity="center"
-            android:text="Edit an Existing User" />
+            android:text="Edit Account Information" />
 
         <EditText
-            android:id="@+id/inputUserName"
+            android:id="@+id/inputName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="User Name" />
-
-        <EditText
-            android:id="@+id/inputProperty"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Field to Change" />
-
-        <EditText
-            android:id="@+id/inputEdit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Edit" />
-
+            android:hint="Name" />
         <Button
-            android:id="@+id/button"
+            android:id="@+id/button1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Submit"
-            android:onClick="onConnectUserEditButtonClick"/>
-        <TextView
-            android:id="@+id/output"
+            android:text="Change Display Name"
+            android:onClick="onConnectUserButtonClickName"/>
+        <EditText
+            android:id="@+id/inputPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:gravity="center"
-            android:text="Output" />
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="Password" />
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Change Password"
+            android:onClick="onConnectUserButtonClickPwd"/>
+        <EditText
+            android:id="@+id/inputBio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:hint="New Bio (optional field)" />
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Change Bio"
+            android:onClick="onConnectUserButtonClickBio"/>
+
+
 
 
     </LinearLayout>

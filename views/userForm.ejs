@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <title>Freebox: Add User</title>
+        <link rel="stylesheet" type="text/css" href="styles.css" />
+    </head>
+
+    <body>
+        <form action="/">
+            <input type="submit" value="Home">
+          </form>
+        <form action="/createUser" method="post">
+
+            Name: <input type="text" name="name">
+            <p></p>
+            Username: <input type="text" name="id">
+            <p></p>
+            Password: <input type="text" name="password">
+            <p></p>
+            Email (@brynmawr.edu): <input type="text" name="email">
+            <p></p>
+            Bio: <input type="text" name="bio">
+            <p></p>
+            <input type="submit" value="Create User">
+        </form>
+        <div><%= userResult %></div>
+    </body>
+
+</html>

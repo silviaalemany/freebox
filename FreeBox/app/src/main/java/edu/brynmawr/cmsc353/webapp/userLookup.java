@@ -29,10 +29,12 @@ public class userLookup extends AppCompatActivity {
     protected String[] postDisplay;
     protected boolean[] availability;
     protected String message;
-
+    protected String user;
+    protected String name;
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
-
+        name = getIntent().getStringExtra("name");
+        user = getIntent().getStringExtra("user");
         setContentView(R.layout.activity_userlookup);
 
     }
@@ -104,7 +106,7 @@ public class userLookup extends AppCompatActivity {
                         }
                         catch (Exception e) {
                             e.printStackTrace();
-                            userDisplay = e.toString();
+                            userDisplay = "There was an issue with searching for the user you specified. Try again?";
                         }
                     }
             );
@@ -145,4 +147,5 @@ public class userLookup extends AppCompatActivity {
             userTV.setText(e.toString());
         }
     }
+
 }

@@ -7,7 +7,6 @@ input[type=button], input[type=submit] {
     padding: 12px 20px;
     margin: 8px 0;
     cursor: pointer;
-    
 }
 
 input[type=submit]:hover {
@@ -39,6 +38,14 @@ button {
 
 button:hover {
     background-color: #be8efb;
-    cursor: pointer;
-    
+    cursor: pointer;    
+}
+
+button:hover {
+  background-color: #be8efb;
+  cursor: pointer;  
+}
+
+body {
+  font-family:'Helvetica';             
 }

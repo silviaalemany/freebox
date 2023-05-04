@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="User Name" />
+            android:hint="Username" />
 
         <Button
             android:id="@+id/button"
@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="30dp"
                     android:gravity="center"
-                    android:text="Output" />
+                    android:text=" " />
                 <LinearLayout
                     android:id="@+id/postLayouts"
                     android:layout_width="match_parent"

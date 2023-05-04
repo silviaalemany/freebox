@@ -19,13 +19,6 @@
             android:gravity="center"
             android:text="Create a Post" />
 
-        <EditText
-            android:id="@+id/inputUserName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="User Name" />
 
         <EditText
             android:id="@+id/inputPrice"
@@ -33,7 +26,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Price" />
+            android:hint="Price" />
 
         <EditText
             android:id="@+id/inputDesc"
@@ -41,7 +34,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textPersonName"
-            android:text="Description" />
+            android:hint="Description" />
 
         <Button
             android:id="@+id/button"

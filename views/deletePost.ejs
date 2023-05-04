@@ -1,0 +1,20 @@
+<html>
+  <head>
+    <title>Delete a Post</title>
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+  </head>
+  <body>
+    <form action="/">
+      <input type="submit" value="Home">
+    </form>
+    <form action="/deletePost" method="post">
+
+      Post ID: <input type="text" name="_id">
+        
+      <input type="submit" value="Delete">
+      
+    </form>
+    <div><%= deleteResult %></div>
+  </body>
+  
+</html>

@@ -14,10 +14,7 @@ var postSchema = new Schema({
         // desc is user description (supplemental)
         desc: {type: String},
         // status: true if still available to purchase
-        status: {type: Boolean, required: true},
-        //tags: strings to define object 
-        tags: [String]
-
+        status: {type: Boolean, required: true}
     });
 
 // export postSchema as a class called Post

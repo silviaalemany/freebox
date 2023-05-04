@@ -2,6 +2,7 @@ package edu.brynmawr.cmsc353.webapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -20,17 +21,19 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class createPost extends AppCompatActivity{
-    EditText inputUserName;
     EditText inputPrice;
     EditText inputDesc;
+    protected Toast toast;
+    int duration = Toast.LENGTH_SHORT;
+    protected CharSequence toastText;
 
-
-    protected String message;
-
+    protected String name;
+    protected String user;
+    boolean success = false;
     protected void onCreate(Bundle savedInstance){
         super.onCreate(savedInstance);
-
-        //inputName.getText()
+        name = getIntent().getStringExtra("name");
+        user = getIntent().getStringExtra("user");
 
         setContentView(R.layout.activity_createpost);
 
@@ -38,13 +41,11 @@ public class createPost extends AppCompatActivity{
     }
 
     public void onConnectUserButtonClick(View v) {
-        inputUserName = (EditText) findViewById(R.id.inputUserName);
         inputPrice = (EditText) findViewById(R.id.inputPrice);
         inputDesc = (EditText) findViewById(R.id.inputDesc);
 
         TextView tv = findViewById(R.id.output);
 
-        String username = inputUserName.getText().toString();
         String price = inputPrice.getText().toString();
         String desc = inputDesc.getText().toString();
 
@@ -56,7 +57,7 @@ public class createPost extends AppCompatActivity{
                             // and that it has a /test endpoint that returns a JSON object with
                             // a field called "message"
 
-                            URL url = new URL("http://10.0.2.2:3000/createPostApp?user=" + username
+                            URL url = new URL("http://10.0.2.2:3000/createPostApp?user=" + user
                                     +"&price=" + price + "&desc=" + desc);
 
                             Log.d("createPost",url.toString());
@@ -70,15 +71,19 @@ public class createPost extends AppCompatActivity{
                             String response = in.nextLine();
 
                             JSONObject jo = new JSONObject(response);
+                            success = jo.getBoolean("success");
 
-                            // need to set the instance variable in the Activity object
-                            // because we cannot directly access the TextView from here
-                            message = jo.getString("message");
+
+
+                            if (success) {
+                                toastText = "Successfully added " + name + "\'s post to the database.";
+                            } else {
+                                toastText = (CharSequence) jo.getString("status");
+                            }
 
                         }
                         catch (Exception e) {
-                            e.printStackTrace();
-                            message = e.toString();
+                            toastText = "There was an issue creating your post. Try again?";
                         }
                     }
             );
@@ -87,14 +92,12 @@ public class createPost extends AppCompatActivity{
             // it's a bit of a hack because it's not truly asynchronous
             // but it should be okay for our purposes (and is a lot easier)
             executor.awaitTermination(2, TimeUnit.SECONDS);
-
-            // now we can set the status in the TextView
-            tv.setText(message);
-        }
-        catch (Exception e) {
-            // uh oh
-            e.printStackTrace();
-            //tv.setText(e.toString());
+        } catch (Exception e) {
+            toastText = "There was an issue creating your post. Try again?";
+        } finally {
+            Context context = getApplicationContext();
+            toast = Toast.makeText(context, toastText, duration);
+            toast.show();
         }
     }
 }

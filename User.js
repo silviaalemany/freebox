@@ -11,6 +11,8 @@ var userSchema = new Schema({
         name: {type: String, required: true},
         // userID (kind of like an @, or username)
         id: {type: String, required: true, unique: true},
+        // password
+        password: {type: String, required: true},
         // .edu email 
         email: {type: String, required: true, unique: true},
         // personal bio/info (could include pronouns, etc)

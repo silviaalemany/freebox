@@ -23,13 +23,15 @@ public class editPost extends AppCompatActivity {
     EditText inputPostID;
     EditText inputEdit;
 
-
+    protected String name;
+    protected String user;
     protected String message;
 
     protected void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
 
-        //inputName.getText()
+        name = getIntent().getStringExtra("name");
+        user = getIntent().getStringExtra("user");
 
         setContentView(R.layout.activity_editposts);
 
@@ -55,8 +57,8 @@ public class editPost extends AppCompatActivity {
                             // and that it has a /test endpoint that returns a JSON object with
                             // a field called "message"
 
-                            URL url = new URL("http://10.0.2.2:3000/editPostDescApp?id=" + id
-                                    + "&desc=" + edit);
+                            URL url = new URL("http://10.0.2.2:3000/editPostDescApp?user=" +
+                                    user + "&id=" + id + "&desc=" + edit);
 
                             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                             conn.setRequestMethod("GET");
@@ -69,12 +71,11 @@ public class editPost extends AppCompatActivity {
 
                             // need to set the instance variable in the Activity object
                             // because we cannot directly access the TextView from here
-                            message = jo.toString();
+                            message = jo.getString("status");
 
                         }
                         catch (Exception e) {
-                            e.printStackTrace();
-                            message = e.toString();
+                            message = "There was an issue with editing your post. Try again?";
                         }
                     }
             );
@@ -89,8 +90,7 @@ public class editPost extends AppCompatActivity {
         }
         catch (Exception e) {
             // uh oh
-            e.printStackTrace();
-            tv.setText(e.toString());
+            tv.setText("There was an issue with editing your post. Try again?");
         }
     }
 

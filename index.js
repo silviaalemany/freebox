@@ -447,7 +447,7 @@ app.use('/editPostDescApp', (req, res) => {
 		res.json({'status': 'Missing data. Please provide post id and a new value'});
 		res.end();
 	} else {
-		var filter = { 'id' : req.query.id , 'user' : req.query.user};
+		var filter = { '_id' : req.query.id , 'user' : req.query.user};
 		var action = { '$set' : {'desc' : req.query.desc}};
 		// if user wants to replace required field with nothing, don't let them!
 		if (!req.query.desc) {

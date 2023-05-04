@@ -58,7 +58,7 @@ public class editPost extends AppCompatActivity {
                             // a field called "message"
 
                             URL url = new URL("http://10.0.2.2:3000/editPostDescApp?user=" +
-                                    user + "id=" + id + "&desc=" + edit);
+                                    user + "&id=" + id + "&desc=" + edit);
 
                             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                             conn.setRequestMethod("GET");
